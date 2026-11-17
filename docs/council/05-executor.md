@@ -1,0 +1,8 @@
+# The Executor
+Cut it to a two-person loop and test it in one week.
+MVP IN: phone or Apple/Google auth; friend link with accept; one basic profile (3 photos, 2 prompts, age, city, gender/preference toggle, no voice notes); swipe deck with Like only, 10 per day per friend; match detection in a Postgres function with RLS, singles never told; matchmaker chat on Supabase Realtime, text only; date proposal with time and place, both-matchmakers approve, then accept/decline for the singles; block and report buttons writing to a table you read by hand.
+OUT: Super Like and payments; voice notes; friends-of-friends ranking (pool is just your friends' friends within one city, filtered by preference); push notifications (week 3; use email/WhatsApp nudges until then); fancy gestures (react-native-gesture-handler + Reanimated basic card fling).
+Build order (about 3 weeks, evenings): 1 schema and RLS via migrations; 2 auth and friend link; 3 deck and swipe; 4 match function; 5 matchmaker chat; 6 date approval flow; 7 polish. Ship via EAS free builds / TestFlight / Android internal testing. Skip the web build.
+First real test (week 1, before chat or dates exist): recruit 8 to 12 friends from one dorm or class (4 pairs of matchmakers, each pair running two singles), hand-seed a pool of about 20 candidate profiles, everyone gets 10 swipes. Success: at least 70% of matchmakers finish all swipes, and at least one pair unprompted opens the chat to talk about the match. Then approve one real date, even if set up manually.
+Cold start: one campus, one city. Seed it yourself. Don't build for scale until one crew completes a date.
+GDPR: minimal data, delete-account button, privacy policy page. Minimum done before the test.

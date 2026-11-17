@@ -1,0 +1,9 @@
+# The Outsider
+I read this as a stranger, and it took me three reads to understand the core loop. A 22-year-old gets maybe five seconds. Here is where I got lost.
+1. "Matchmaker" and "single" are never introduced. In your own example, Jonathan is both a user and a friend being swiped for. Is he on the app? Does he know I'm swiping for him? You say he isn't told about the match, but is he told he has a matchmaker? The rule "10 swipes per friend per day" implies he knows. So what is hidden, exactly? The question needs a plain one-sentence version.
+2. The word "blind" does double duty. Is it a blind date, meaning he doesn't know who she is? Or a blind match, meaning neither knows a match happened? Then the date request arrives. Do they see photos before they accept? If they can see photos, the date isn't blind. If they can't, why would anyone accept a stranger's invite? This is the biggest unexplained gap.
+3. Why would I use this? I install the app, I have no friends on it, and I'm asked to swipe on strangers' friends for someone who isn't here. That is a lot of homework with no reward for me. Nothing in the loop pays the matchmaker. They get no matches of their own and no fun, only a chat with another stranger-matchmaker. Is chatting with a stranger about my friend's date weird? Probably, for most people.
+4. "Friends of friends first" will confuse people. Whose friends? Mine or Jonathan's? Jonathan's single friends are people he already knows, so the match is no surprise.
+5. Jargon: "Super Like", "crew", "critical mass", "cold start", "Hinge-style". A normal user knows only "swipe" and "match".
+6. A real worry: Jonathan's friend swipes yes on Miriam, and she doesn't know she's being judged by a stranger on her friend's behalf. Would she be creeped out? Nobody asks her.
+Fix first: write the 30-second pitch as if explaining it to your grandmother.
