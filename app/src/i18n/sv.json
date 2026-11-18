@@ -136,7 +136,10 @@
     "accepted": "Du har tackat ja",
     "declined": "Du har tackat nej",
     "confirmed": "Dejten är bekräftad!",
-    "confirmedTitle": "Bekräftad"
+    "confirmedTitle": "Bekräftad",
+    "openChat": "Öppna dejtchatten",
+    "chatLater": "Dejtchatten öppnas på dejtens dag så att ni kan hitta varandra.",
+    "chatOpenNow": "Dejtchatten är öppen"
   },
   "friends": {
     "title": "Vänner",
@@ -221,6 +224,21 @@
     "failed": "Kunde inte byta konto",
     "switchTitle": "Byt profil",
     "button": "Byt profil",
-    "empty": "Inga testkonton hittades. Kräver Premium."
+    "empty": "Inga testkonton hittades."
+  },
+  "dateChat": {
+    "title": "Dejtchatt",
+    "with": "Du dejtar {{name}}",
+    "hint": "Ni ser inte varandras profiler. Använd chatten för att hitta varandra.",
+    "placeholder": "Skriv till {{name}}…",
+    "closed": "Chatten är stängd. Den är öppen på dejtens dag.",
+    "empty": "Inga meddelanden än. Säg hej!",
+    "quick": [
+      "Jag är framme!",
+      "Jag står vid entrén",
+      "Jag är några minuter sen",
+      "Var är du?",
+      "Jag ser dig!"
+    ]
   }
 }

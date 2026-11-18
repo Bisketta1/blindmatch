@@ -1,4 +1,5 @@
-// Lets a premium user sign in as a DEMO account (profiles.is_demo = true) for testing. Refuses everyone else.
+// Lets a user sign in as a DEMO account (profiles.is_demo = true) for testing, if they are premium or the dev switch is on.
+// Real (non-demo) targets are always refused.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' };
@@ -16,8 +17,10 @@ Deno.serve(async (req: Request) => {
 
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const { data: me } = await admin.from('profiles').select('premium').eq('id', user.id).maybeSingle();
+  const { data: setting } = await admin.from('app_settings').select('value').eq('key', 'demo_switch_for_everyone').maybeSingle();
   const { data: t } = await admin.from('profiles').select('id,is_demo').eq('id', target).maybeSingle();
-  if (!me?.premium || !t?.is_demo) return json({ error: 'forbidden' }, 403);
+  const allowed = !!me?.premium || setting?.value === 'true';
+  if (!allowed || !t?.is_demo) return json({ error: 'forbidden' }, 403);
 
   const { data: au, error: e1 } = await admin.auth.admin.getUserById(target);
   if (e1 || !au?.user?.email) return json({ error: 'no such user' }, 404);
