@@ -28,7 +28,7 @@ export default function FriendProfile() {
   }, [id]);
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 18, paddingTop: 52, paddingBottom: 40 }}>
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 18, paddingTop: 8, paddingBottom: 40 }}>
       <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start', marginBottom: 8 }} />
       {p === null && <Muted>{t('friends.notFound')}</Muted>}
       {p && (

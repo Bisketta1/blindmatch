@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
-import { colors, radius } from '../theme';
+import { colors, radius, shadow } from '../theme';
+import { Display } from './Display';
 import { Icon, IconName } from './Icon';
 
 export function Btn(props: { label: string; icon?: IconName; onPress: () => void; kind?: 'primary' | 'soft' | 'danger' | 'ghost'; disabled?: boolean; loading?: boolean; style?: ViewStyle }) {
@@ -12,7 +13,7 @@ export function Btn(props: { label: string; icon?: IconName; onPress: () => void
       accessibilityRole="button"
       onPress={props.onPress}
       disabled={props.disabled || props.loading}
-      style={({ pressed }) => [styles.btn, { backgroundColor: bg, opacity: props.disabled ? 0.5 : pressed ? 0.85 : 1 }, props.style]}>
+      style={({ pressed }) => [styles.btn, kind === 'primary' && !props.disabled && shadow.button, { backgroundColor: bg, opacity: props.disabled ? 0.45 : pressed ? 0.88 : 1, transform: [{ scale: pressed ? 0.985 : 1 }] }, props.style]}>
       {props.loading ? <ActivityIndicator color={fg} /> : (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           {props.icon ? <Icon name={props.icon} size={18} color={fg} strokeWidth={2.4} /> : null}
@@ -49,14 +50,14 @@ export function Field(props: TextInputProps & { label?: string; error?: boolean;
 
 export function Chip(props: { label: string; active: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={props.onPress} style={[styles.chip, props.active && { backgroundColor: colors.primary, borderColor: colors.primary }]}>
+    <Pressable onPress={props.onPress} style={[styles.chip, props.active && { backgroundColor: colors.ink, borderColor: colors.ink }]}>
       <Text style={{ color: props.active ? '#fff' : colors.text, fontWeight: '600' }}>{props.label}</Text>
     </Pressable>
   );
 }
 
 export function H1({ children }: { children: React.ReactNode }) {
-  return <Text style={styles.h1}>{children}</Text>;
+  return <Display style={styles.h1}>{children}</Display>;
 }
 export function Muted({ children, style }: { children: React.ReactNode; style?: object }) {
   return <Text style={[{ color: colors.muted, fontSize: 14, lineHeight: 20 }, style]}>{children}</Text>;
@@ -66,20 +67,20 @@ export function Card({ children, style }: { children: React.ReactNode; style?: V
 }
 
 const styles = StyleSheet.create({
-  btn: { paddingVertical: 14, paddingHorizontal: 20, borderRadius: radius.button, alignItems: 'center', justifyContent: 'center', minHeight: 48 },
-  btnText: { fontSize: 16, fontWeight: '700' },
-  label: { color: colors.muted, fontSize: 13, marginBottom: 4, marginLeft: 4 },
-  input: { backgroundColor: colors.card, borderRadius: radius.button, borderWidth: 1, borderColor: colors.line, paddingHorizontal: 14, paddingVertical: 12, fontSize: 16, color: colors.text },
-  chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: radius.chip, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, marginRight: 8, marginBottom: 8 },
-  h1: { fontSize: 28, fontWeight: '800', color: colors.text, marginBottom: 18 },
-  card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 18, marginBottom: 16, borderWidth: 1, borderColor: colors.line },
+  btn: { paddingVertical: 14, paddingHorizontal: 24, borderRadius: radius.button, alignItems: 'center', justifyContent: 'center', minHeight: 52 },
+  btnText: { fontSize: 16, fontWeight: '700', letterSpacing: 0.2 },
+  label: { color: colors.muted, fontSize: 13, fontWeight: '600', marginBottom: 6, marginLeft: 4, letterSpacing: 0.2 },
+  input: { backgroundColor: colors.card, borderRadius: radius.field, borderWidth: 1, borderColor: colors.line, paddingHorizontal: 16, paddingVertical: 14, fontSize: 17, color: colors.text, minHeight: 52 },
+  chip: { paddingVertical: 10, paddingHorizontal: 16, minHeight: 44, justifyContent: 'center', borderRadius: radius.chip, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, marginRight: 8, marginBottom: 8 },
+  h1: { fontSize: 32, lineHeight: 38, color: colors.text, marginBottom: 20 },
+  card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 20, marginBottom: 16, borderWidth: 1, borderColor: colors.line, ...shadow.card },
 });
 
 /** Titled block with consistent spacing, used to group form fields. */
 export function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
     <View style={{ marginBottom: 28 }}>
-      <Text style={{ fontSize: 17, fontWeight: '800', color: colors.text, marginBottom: hint ? 4 : 12 }}>{title}</Text>
+      <Display style={{ fontSize: 21, lineHeight: 28, marginBottom: hint ? 4 : 12 }}>{title}</Display>
       {hint ? <Text style={{ color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 12 }}>{hint}</Text> : null}
       {children}
     </View>

@@ -59,7 +59,7 @@ export default function Friends() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 64 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16 }} keyboardShouldPersistTaps="handled">
       <H1>{t('friends.title')}</H1>
       <Card>
         <Muted>{t('friends.myCode')}</Muted>

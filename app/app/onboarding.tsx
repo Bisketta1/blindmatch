@@ -28,7 +28,7 @@ export default function Onboarding() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingTop: 64 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingTop: 16 }} keyboardShouldPersistTaps="handled">
       <H1>{t('onboarding.title')}</H1>
       <ProfileForm initial={EMPTY_PROFILE} mode="create" submitLabel={t('onboarding.finish')} busy={busy} onSubmit={create} />
     </ScrollView>

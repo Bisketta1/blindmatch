@@ -12,6 +12,7 @@ import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
 import { DateField, toDateString, toTimeString } from '../../src/components/DateField';
 import { Icon, IconName } from '../../src/components/Icon';
 import type { MatchRow } from '../(tabs)/chats';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius } from '../../src/theme';
 
 type Msg = { id: string; sender_id: string; body: string; created_at: string };
@@ -32,6 +33,7 @@ export default function ChatScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { session } = useSession();
+  const insets = useSafeAreaInsets();
   const uid = session!.user.id;
   const { refresh } = useBadges();
   const markRead = useCallback(async () => { await supabase.rpc('mark_match_read', { p_match: id }); refresh(true); }, [id, refresh]);
@@ -158,7 +160,7 @@ export default function ChatScreen() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 52, paddingHorizontal: 8, paddingBottom: 6, backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.line }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 8, paddingHorizontal: 8, paddingBottom: 6, backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.line }}>
         <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} />
         <Text style={{ fontSize: 18, fontWeight: '800', color: colors.text }}>{name}</Text>
         <Pressable accessibilityLabel={t('chats.menu.title')} onPress={() => { setConfirmRelease(false); setMenu(true); }} style={{ padding: 12 }}>
@@ -232,7 +234,7 @@ export default function ChatScreen() {
           </Card>
         )}
       </ScrollView>
-      <View style={{ flexDirection: 'row', padding: 12, gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
+      <View style={{ flexDirection: 'row', padding: 12, paddingBottom: Math.max(12, insets.bottom), gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
         <View style={{ flex: 1 }}><Field value={text} onChangeText={setText} placeholder={t('chats.typeMessage')} onSubmitEditing={send} /></View>
         <Btn label={t('chats.send')} onPress={send} disabled={!text.trim()} style={{ height: 48 }} />
       </View>

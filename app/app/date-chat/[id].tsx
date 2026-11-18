@@ -6,6 +6,7 @@ import { supabase } from '../../src/lib/supabase';
 import { useSession } from '../../src/lib/session';
 import { hapticLight } from '../../src/lib/haptics';
 import { Btn, Field, Muted } from '../../src/components/ui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius } from '../../src/theme';
 
 type Msg = { id: string; sender_id: string; body: string; created_at: string };
@@ -17,6 +18,7 @@ export default function DateChat() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { session } = useSession();
+  const insets = useSafeAreaInsets();
   const uid = session!.user.id;
   const [info, setInfo] = useState<DateRow | null>(null);
   const [msgs, setMsgs] = useState<Msg[]>([]);
@@ -55,7 +57,7 @@ export default function DateChat() {
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <View style={{ paddingTop: 52, paddingHorizontal: 8, paddingBottom: 10, backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.line }}>
+      <View style={{ paddingTop: 8, paddingHorizontal: 8, paddingBottom: 10, backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.line }}>
         <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
         <View style={{ paddingHorizontal: 12 }}>
           <Text style={{ fontSize: 22, fontWeight: '800', color: colors.text }}>{t('dateChat.title')}</Text>
@@ -83,7 +85,7 @@ export default function DateChat() {
           ))}
         </ScrollView>
       )}
-      <View style={{ flexDirection: 'row', padding: 12, gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
+      <View style={{ flexDirection: 'row', padding: 12, paddingBottom: Math.max(12, insets.bottom), gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
         <View style={{ flex: 1 }}><Field value={text} onChangeText={setText} placeholder={t('dateChat.placeholder', { name })} onSubmitEditing={() => send(text)} editable={open} /></View>
         <Btn label={t('chats.send')} onPress={() => send(text)} disabled={!text.trim() || !open} style={{ height: 48 }} />
       </View>

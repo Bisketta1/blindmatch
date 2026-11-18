@@ -44,7 +44,7 @@ export default function EditProfile() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingTop: 56 }} keyboardShouldPersistTaps="handled">
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingTop: 8 }} keyboardShouldPersistTaps="handled">
       <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
       <H1>{t('profile.editTitle')}</H1>
       {initial ? <ProfileForm initial={initial} mode="edit" submitLabel={t('common.save')} busy={busy} onSubmit={save} /> : <View><ActivityIndicator color={colors.primary} /></View>}

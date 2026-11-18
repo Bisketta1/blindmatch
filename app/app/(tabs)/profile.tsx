@@ -51,7 +51,7 @@ export default function ProfileScreen() {
   }
   if (!profile) return null;
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 64 }}>
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16 }}>
       <H1>{t('profile.title')}</H1>
       <Card>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>

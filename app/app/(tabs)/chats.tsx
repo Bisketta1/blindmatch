@@ -29,7 +29,7 @@ export default function Chats() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 64 }}>
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16 }}>
       <H1>{t('chats.title')}</H1>
       {rows.length === 0 && <Muted>{t('chats.empty')}</Muted>}
       {rows.map((r) => (

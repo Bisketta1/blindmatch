@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useBadges } from '../lib/badges';
 import { Btn } from './ui';
+import { Display } from './Display';
 import { Icon } from './Icon';
 import { hapticSuccess } from '../lib/haptics';
 import { colors } from '../theme';
@@ -64,7 +65,7 @@ export function MatchOverlay() {
           </Animated.View>
         </View>
         <Animated.View style={{ opacity: text, alignItems: 'center', transform: [{ translateY: text.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }] }}>
-          <Text style={styles.title}>{t('match.title')}</Text>
+          <Display style={styles.title}>{t('match.title')}</Display>
           <Text style={styles.body}>{match.body}</Text>
           <Btn label={t('match.chat')} icon="chat" onPress={goChat} style={{ alignSelf: 'stretch', marginTop: 24 }} />
           <Btn kind="ghost" label={t('match.continue')} onPress={dismissMatch} />
@@ -75,9 +76,9 @@ export function MatchOverlay() {
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: '#FFF8F1f2', alignItems: 'center', justifyContent: 'center', padding: 32 },
+  backdrop: { flex: 1, backgroundColor: '#FAF5EEf5', alignItems: 'center', justifyContent: 'center', padding: 32 },
   stage: { width: 260, height: 180, alignItems: 'center', justifyContent: 'center' },
   circle: { position: 'absolute', width: 120, height: 120, borderRadius: 60 },
-  title: { fontSize: 30, fontWeight: '900', color: colors.text, textAlign: 'center' },
+  title: { fontSize: 36, lineHeight: 42, textAlign: 'center' },
   body: { fontSize: 16, color: colors.muted, textAlign: 'center', marginTop: 8, lineHeight: 22 },
 });

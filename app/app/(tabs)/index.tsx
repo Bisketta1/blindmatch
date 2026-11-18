@@ -74,11 +74,11 @@ export default function SwipeScreen() {
   }
 
   if (!friendsLoaded) return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
-  if (!friends.length) return <View style={{ flex: 1, backgroundColor: colors.bg, padding: 24, paddingTop: 80 }}><H1>{t('tabs.swipe')}</H1><Muted>{t('swipe.noFriends')}</Muted></View>;
+  if (!friends.length) return <View style={{ flex: 1, backgroundColor: colors.bg, padding: 24, paddingTop: 16 }}><H1>{t('tabs.swipe')}</H1><Muted>{t('swipe.noFriends')}</Muted></View>;
   const top = deck[0];
 
   return (
-    <ScrollView scrollEnabled={!dragging} style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 64 }}>
+    <ScrollView scrollEnabled={!dragging} style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16 }}>
       <Muted>{t('swipe.forWhom')}</Muted>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginVertical: 8 }}>
         {friends.map((f) => <Chip key={f.id} label={f.first_name} active={single?.id === f.id} onPress={() => setSingle(f)} />)}

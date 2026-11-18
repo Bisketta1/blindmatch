@@ -112,15 +112,15 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
                   <Text style={{ color: '#fff', fontSize: 10, fontWeight: '800' }}>{t('onboarding.photoMain')}</Text>
                 </View>
               )}
-              <Pressable onPress={() => set('photos', v.photos.filter((x) => x !== u))} hitSlop={8}
-                style={{ position: 'absolute', top: 6, right: 6, backgroundColor: '#fffffff0', borderRadius: 12, padding: 4 }}>
+              <Pressable onPress={() => set('photos', v.photos.filter((x) => x !== u))} hitSlop={16}
+                style={{ position: 'absolute', top: 6, right: 6, backgroundColor: '#fffffff0', borderRadius: 14, padding: 6 }}>
                 <Icon name="close" size={14} color={colors.danger} strokeWidth={3} />
               </Pressable>
               <View style={{ position: 'absolute', bottom: 6, left: 6, right: 6, flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Pressable onPress={() => movePhoto(i, -1)} disabled={i === 0} hitSlop={8} style={{ backgroundColor: '#fffffff0', borderRadius: 12, padding: 4, opacity: i === 0 ? 0.3 : 1 }}>
+                <Pressable onPress={() => movePhoto(i, -1)} disabled={i === 0} hitSlop={14} style={{ backgroundColor: '#fffffff0', borderRadius: 14, padding: 6, opacity: i === 0 ? 0.3 : 1 }}>
                   <Icon name="back" size={14} color={colors.text} strokeWidth={3} />
                 </Pressable>
-                <Pressable onPress={() => movePhoto(i, 1)} disabled={i === v.photos.length - 1} hitSlop={8} style={{ backgroundColor: '#fffffff0', borderRadius: 12, padding: 4, opacity: i === v.photos.length - 1 ? 0.3 : 1 }}>
+                <Pressable onPress={() => movePhoto(i, 1)} disabled={i === v.photos.length - 1} hitSlop={14} style={{ backgroundColor: '#fffffff0', borderRadius: 14, padding: 6, opacity: i === v.photos.length - 1 ? 0.3 : 1 }}>
                   <Icon name="next" size={14} color={colors.text} strokeWidth={3} />
                 </Pressable>
               </View>

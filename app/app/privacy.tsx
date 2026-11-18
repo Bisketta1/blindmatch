@@ -9,7 +9,7 @@ export default function Privacy() {
   const { t } = useTranslation();
   const router = useRouter();
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingTop: 64 }}>
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 24, paddingTop: 16 }}>
       <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
       <H1>{t('privacy.title')}</H1>
       <Muted style={{ fontSize: 16, lineHeight: 24 }}>{t('privacy.body')}</Muted>

@@ -26,7 +26,8 @@
           "photosPermission": "Appen behöver dina bilder för att visa din profil."
         }
       ],
-      "expo-audio"
+      "expo-audio",
+      "expo-font"
     ],
     "scheme": "blindmatch"
   }

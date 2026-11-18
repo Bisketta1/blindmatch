@@ -2,7 +2,9 @@ import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { decideSwipe, SwipeDirection } from './decision';
 import { hapticLight } from '../../lib/haptics';
-import { colors, radius } from '../../theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Display } from '../../components/Display';
+import { colors, radius, shadow } from '../../theme';
 
 export type Candidate = {
   candidate_id: string; first_name: string; age: number; city: string | null; bio: string | null; photos: string[];
@@ -62,12 +64,17 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
 
   return (
     <Animated.View {...responder.panHandlers} style={[styles.card, { transform: [{ translateX: pos.x }, { translateY: pos.y }, { rotate }] }]}>
-      {candidate.photos[0] ? <Image source={{ uri: candidate.photos[0] }} style={styles.photo} resizeMode="cover" /> : <View style={styles.photo} />}
-      <Animated.View style={[styles.stamp, styles.stampYes, { opacity: yesOpacity }]}><Text style={[styles.stampText, { color: colors.yes }]}>{yesLabel}</Text></Animated.View>
-      <Animated.View style={[styles.stamp, styles.stampNo, { opacity: noOpacity }]}><Text style={[styles.stampText, { color: colors.no }]}>{noLabel}</Text></Animated.View>
+      <View style={styles.photoWrap}>
+        {candidate.photos[0] ? <Image source={{ uri: candidate.photos[0] }} style={styles.photo} resizeMode="cover" /> : <View style={styles.photo} />}
+        <LinearGradient colors={['transparent', 'rgba(30,18,12,0.78)']} style={styles.shade} pointerEvents="none" />
+        <View style={styles.nameBlock} pointerEvents="none">
+          <Display style={styles.name}>{candidate.first_name}<Text style={styles.age}>  {candidate.age}</Text></Display>
+          {candidate.city ? <Text style={styles.city}>{candidate.city}</Text> : null}
+        </View>
+        <Animated.View style={[styles.stamp, styles.stampYes, { opacity: yesOpacity }]}><Text style={[styles.stampText, { color: colors.yes }]}>{yesLabel}</Text></Animated.View>
+        <Animated.View style={[styles.stamp, styles.stampNo, { opacity: noOpacity }]}><Text style={[styles.stampText, { color: colors.no }]}>{noLabel}</Text></Animated.View>
+      </View>
       <View style={styles.info}>
-        <Text style={styles.name}>{candidate.first_name}, {candidate.age}</Text>
-        {candidate.city ? <Text style={styles.sub}>{candidate.city}</Text> : null}
         {candidate.bio ? <Text style={styles.bio} numberOfLines={3}>{candidate.bio}</Text> : null}
         {candidate.answers.slice(0, 2).map((a) => (
           <View key={a.prompt} style={styles.answer}>
@@ -81,17 +88,21 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
 });
 
 const styles = StyleSheet.create({
-  card: { userSelect: 'none', width: '100%', backgroundColor: colors.card, borderRadius: radius.card, overflow: 'hidden', borderWidth: 1, borderColor: colors.line, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
-  photo: { width: '100%', height: 360, backgroundColor: colors.primarySoft },
-  info: { padding: 16 },
-  name: { fontSize: 24, fontWeight: '800', color: colors.text },
-  sub: { color: colors.muted, marginBottom: 6 },
-  bio: { color: colors.text, marginBottom: 8 },
-  answer: { backgroundColor: colors.bg, borderRadius: 14, padding: 10, marginTop: 6 },
-  prompt: { color: colors.muted, fontSize: 12 },
-  answerText: { color: colors.text, fontSize: 16, fontWeight: '600' },
-  stamp: { position: 'absolute', top: 28, borderWidth: 4, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 4, backgroundColor: '#ffffffcc' },
-  stampYes: { left: 20, borderColor: colors.yes, transform: [{ rotate: '-12deg' }] },
-  stampNo: { right: 20, borderColor: colors.no, transform: [{ rotate: '12deg' }] },
-  stampText: { fontSize: 30, fontWeight: '900' },
+  card: { userSelect: 'none', width: '100%', backgroundColor: colors.card, borderRadius: 28, overflow: 'hidden', borderWidth: 1, borderColor: colors.line, ...shadow.lift },
+  photoWrap: { width: '100%', height: 420, backgroundColor: colors.primarySoft },
+  photo: { width: '100%', height: 420, backgroundColor: colors.primarySoft },
+  shade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 190 },
+  nameBlock: { position: 'absolute', left: 20, right: 20, bottom: 18 },
+  name: { color: '#fff', fontSize: 36, lineHeight: 42 },
+  age: { color: '#fff', fontSize: 28, opacity: 0.92 },
+  city: { color: '#fff', fontSize: 15, opacity: 0.92, marginTop: 2, fontWeight: '600' },
+  info: { padding: 18 },
+  bio: { color: colors.text, fontSize: 16, lineHeight: 23, marginBottom: 10 },
+  answer: { backgroundColor: colors.bg, borderRadius: 18, padding: 14, marginTop: 8 },
+  prompt: { color: colors.muted, fontSize: 13, marginBottom: 2 },
+  answerText: { color: colors.text, fontSize: 18, lineHeight: 24, fontWeight: '600' },
+  stamp: { position: 'absolute', top: 28, borderWidth: 4, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 4, backgroundColor: '#ffffffe6' },
+  stampYes: { left: 22, borderColor: colors.yes, transform: [{ rotate: '-12deg' }] },
+  stampNo: { right: 22, borderColor: colors.no, transform: [{ rotate: '12deg' }] },
+  stampText: { fontSize: 30, fontWeight: '900', letterSpacing: 1 },
 });
