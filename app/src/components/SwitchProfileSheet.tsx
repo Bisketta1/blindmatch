@@ -33,6 +33,7 @@ export function SwitchProfileSheet({ visible, onClose }: { visible: boolean; onC
         <Text style={{ fontSize: 20, fontWeight: '800', color: colors.text, textAlign: 'center' }}>{t('viewAs.switchTitle')}</Text>
         <Muted style={{ textAlign: 'center', marginTop: 6, marginBottom: 18 }}>{t('viewAs.hint')}</Muted>
         <View style={{ gap: 10 }}>
+          {demos.length === 0 && <Muted style={{ textAlign: 'center' }}>{t('viewAs.empty')}</Muted>}
           {demos.map((d) => (
             <Btn key={d.id} kind={viewAs === d.first_name ? 'primary' : 'soft'} icon="person" label={d.first_name}
               loading={busy === d.id} disabled={!!busy} onPress={() => go(d)} />

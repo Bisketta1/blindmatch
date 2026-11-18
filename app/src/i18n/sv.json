@@ -218,6 +218,7 @@
     "switching": "Byter…",
     "failed": "Kunde inte byta konto",
     "switchTitle": "Byt profil",
-    "button": "Byt profil"
+    "button": "Byt profil",
+    "empty": "Inga testkonton hittades. Kräver Premium."
   }
 }

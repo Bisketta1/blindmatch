@@ -8,6 +8,7 @@ import { Btn, Card, Chip, Field, H1, Muted } from '../../src/components/ui';
 import { hapticError, hapticSuccess } from '../../src/lib/haptics';
 import { notify } from '../../src/lib/notify';
 import { SwitchProfileSheet } from '../../src/components/SwitchProfileSheet';
+import { BUILD } from '../../src/config';
 import { colors } from '../../src/theme';
 
 export default function ProfileScreen() {
@@ -81,12 +82,13 @@ export default function ProfileScreen() {
         <Muted>{t('profile.datesMade')}: {stats.dates_made}</Muted>
       </Card>
       <View style={{ gap: 12, marginTop: 4 }}>
-        {demos.length > 0 && <Btn label={t('viewAs.button')} icon="people" onPress={() => setSheet(true)} />}
-        <Btn kind={demos.length > 0 ? 'soft' : 'primary'} label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} />
+        {(demos.length > 0 || profile.premium) && <Btn label={t('viewAs.button')} icon="people" onPress={() => setSheet(true)} />}
+        <Btn kind={demos.length > 0 || profile.premium ? 'soft' : 'primary'} label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} />
         <Btn kind="soft" label={t('profile.privacy')} onPress={() => router.push('/privacy')} />
         <Btn kind="ghost" label={t('profile.signOut')} onPress={() => supabase.auth.signOut()} />
         <Btn kind="ghost" label={t('profile.delete')} onPress={remove} />
       </View>
+      <Muted style={{ textAlign: 'center', marginTop: 20, fontSize: 12 }}>blindmatch · version {BUILD}</Muted>
       <SwitchProfileSheet visible={sheet} onClose={() => setSheet(false)} />
     </ScrollView>
   );
