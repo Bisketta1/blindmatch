@@ -45,10 +45,12 @@ export default function ProfileScreen() {
         <Muted>{t('profile.matchesMade')}: {stats.matches_made}</Muted>
         <Muted>{t('profile.datesMade')}: {stats.dates_made}</Muted>
       </Card>
-      <Btn label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} style={{ marginBottom: 12 }} />
-      <Btn kind="soft" label={t('profile.privacy')} onPress={() => router.push('/privacy')} />
-      <Btn kind="ghost" label={t('profile.signOut')} onPress={() => supabase.auth.signOut()} />
-      <Btn kind="ghost" label={t('profile.delete')} onPress={remove} />
+      <View style={{ gap: 12, marginTop: 4 }}>
+        <Btn label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} />
+        <Btn kind="soft" label={t('profile.privacy')} onPress={() => router.push('/privacy')} />
+        <Btn kind="ghost" label={t('profile.signOut')} onPress={() => supabase.auth.signOut()} />
+        <Btn kind="ghost" label={t('profile.delete')} onPress={remove} />
+      </View>
     </ScrollView>
   );
 }

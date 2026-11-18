@@ -26,7 +26,7 @@
   "onboarding": {
     "title": "Berätta lite om dig",
     "firstName": "Förnamn",
-    "birthDate": "Födelsedatum (ÅÅÅÅ-MM-DD)",
+    "birthDate": "Födelsedatum",
     "city": "Stad",
     "gender": "Jag är",
     "lookingFor": "Mina vänner kan matcha mig med",
@@ -40,7 +40,19 @@
     "tooYoung": "Du måste vara 18 år eller äldre.",
     "needPhoto": "Lägg till minst en bild.",
     "removePhoto": "Tryck på en bild för att ta bort den",
-    "birthPlaceholder": "Välj födelsedatum"
+    "birthPlaceholder": "Välj födelsedatum",
+    "questionsTitle": "Dina frågor",
+    "questionsHint": "Välj upp till tre och svara med din egen röst. Det är det som gör att folk vill prata med dig.",
+    "addQuestion": "Lägg till en fråga",
+    "choosePrompt": "Välj en fråga",
+    "yourAnswer": "Ditt svar",
+    "photoMain": "Först",
+    "photosHint": "Första bilden visas först. Flytta med pilarna.",
+    "sheetTitle": "Välj en fråga",
+    "genderTitle": "Jag är",
+    "lookingTitle": "Mina vänner kan matcha mig med",
+    "aboutTitle": "Lite om mig",
+    "basicsTitle": "Grunderna"
   },
   "gender": {
     "man": "Man",
@@ -106,7 +118,8 @@
       "reported": "Tack, vi tittar på det",
       "block": "Blockera {{name}}",
       "blocked": "Blockerad"
-    }
+    },
+    "change": "Ändra förslaget"
   },
   "dates": {
     "title": "Dina blinddejter",
@@ -178,6 +191,7 @@
     "reason": "Berätta vad som hänt",
     "wrongLogin": "Fel e-post eller lösenord",
     "name": "Skriv ditt förnamn",
-    "pastDate": "Välj en tid i framtiden"
+    "pastDate": "Välj en tid i framtiden",
+    "answer": "Välj en fråga och skriv ett svar"
   }
 }

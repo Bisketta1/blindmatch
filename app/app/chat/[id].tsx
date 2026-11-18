@@ -114,6 +114,13 @@ export default function ChatScreen() {
     loadProposals();
   }
 
+  async function change(p: Proposal) {
+    await supabase.rpc('cancel_date_proposal', { p_proposal: p.id });
+    const dt = new Date(p.starts_at);
+    setPlace(p.place); setDay(toDateString(dt)); setTime(toTimeString(dt)); setDbl(p.double_date);
+    setShowForm(true); loadProposals(); refresh(true);
+  }
+
   async function approve(pid: string) {
     const { error } = await supabase.rpc('approve_date', { p_proposal: pid });
     if (error) notify(t('common.error'), error.message);
@@ -178,7 +185,7 @@ export default function ChatScreen() {
         </Pressable>
       </Modal>
 
-      <ScrollView ref={scroll} contentContainerStyle={{ padding: 16 }} keyboardShouldPersistTaps="handled"
+      <ScrollView ref={scroll} contentContainerStyle={{ padding: 18, paddingBottom: 28 }} keyboardShouldPersistTaps="handled"
         onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: true })}>
         <Muted style={{ marginBottom: 8 }}>{t('chats.hint')}</Muted>
         {otherSingle && (
@@ -207,6 +214,7 @@ export default function ChatScreen() {
             <Text style={{ marginVertical: 4, color: colors.text }}>{t(`chats.status.${p.status}`)}</Text>
             {p.status === 'pending' && !p.i_approved && <Btn label={t('chats.approve')} onPress={() => approve(p.id)} />}
             {p.status === 'pending' && p.i_approved && <Muted>{t('chats.waitingOther')}</Muted>}
+            {(p.status === 'pending' || p.status === 'sent') && <Btn kind="ghost" label={t('chats.change')} onPress={() => change(p)} style={{ marginTop: 6 }} />}
           </Card>
         ))}
         {!openProposal && !showForm && <Btn kind="soft" icon="calendar" label={t('chats.proposeDate')} onPress={() => setShowForm(true)} />}
@@ -217,8 +225,10 @@ export default function ChatScreen() {
             <DateField label={t('chats.time')} mode="time" value={time} onChange={setTime} doneLabel={t('common.done')} error={dateErr} shake={formShake} />
             <Chip label={t('chats.doubleDate')} active={dbl} onPress={() => setDbl(!dbl)} />
             {formError ? <Text style={{ color: colors.danger, marginVertical: 8 }}>{formError}</Text> : null}
-            <Btn label={sending ? t('chats.sending') : t('chats.proposeDate')} onPress={propose} loading={sending} />
-            <Btn kind="ghost" label={t('common.cancel')} onPress={() => { setShowForm(false); setFormError(''); }} />
+            <View style={{ gap: 8, marginTop: 8 }}>
+              <Btn label={sending ? t('chats.sending') : t('chats.proposeDate')} onPress={propose} loading={sending} />
+              <Btn kind="ghost" label={t('common.cancel')} onPress={() => { setShowForm(false); setFormError(''); }} />
+            </View>
           </Card>
         )}
       </ScrollView>

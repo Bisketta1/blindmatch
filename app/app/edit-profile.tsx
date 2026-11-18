@@ -18,12 +18,11 @@ export default function EditProfile() {
 
   useEffect(() => {
     if (!profile) return;
-    supabase.from('profile_answers').select('prompt_id,answer').eq('profile_id', profile.id).then(({ data }) => {
-      const answers: Record<number, string> = {};
-      (data ?? []).forEach((a: any) => { answers[a.prompt_id] = a.answer; });
+    supabase.from('profile_answers').select('prompt_id,answer,position').eq('profile_id', profile.id).order('position').then(({ data }) => {
+      const slots = (data ?? []).map((a: any) => ({ promptId: a.prompt_id as number, answer: a.answer as string }));
       setInitial({
         firstName: profile.first_name, birth: profile.birth_date, city: profile.city ?? '', gender: profile.gender ?? '',
-        looking: profile.looking_for ?? [], photos: profile.photos ?? [], bio: profile.bio ?? '', answers, matchable: profile.matchable,
+        looking: profile.looking_for ?? [], photos: profile.photos ?? [], bio: profile.bio ?? '', slots, matchable: profile.matchable,
       });
     });
   }, [profile]);
@@ -37,8 +36,7 @@ export default function EditProfile() {
     }).eq('id', uid);
     if (error) { setBusy(false); return notify(t('common.error'), error.message); }
     await supabase.from('profile_answers').delete().eq('profile_id', uid);
-    const rows = Object.entries(v.answers).filter(([, a]) => a.trim()).slice(0, 3)
-      .map(([pid, answer], i) => ({ profile_id: uid, prompt_id: Number(pid), answer: answer.trim(), position: i }));
+    const rows = v.slots.map((s, i) => ({ profile_id: uid, prompt_id: s.promptId as number, answer: s.answer.trim(), position: i }));
     if (rows.length) await supabase.from('profile_answers').insert(rows);
     await refreshProfile();
     setBusy(false);

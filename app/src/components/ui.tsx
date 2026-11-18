@@ -38,7 +38,7 @@ export function Shake({ trigger, children, style }: { trigger?: number; children
 export function Field(props: TextInputProps & { label?: string; error?: boolean; errorText?: string; shake?: number }) {
   const { label, style, error, errorText, shake, ...rest } = props;
   return (
-    <Shake trigger={shake} style={{ marginBottom: 12 }}>
+    <Shake trigger={shake} style={{ marginBottom: 16 }}>
       {label ? <Text style={[styles.label, error && { color: colors.danger }]}>{label}</Text> : null}
       <TextInput placeholderTextColor={colors.muted}
         style={[styles.input, error && { borderColor: colors.danger, borderWidth: 2, backgroundColor: '#FFF1F0', paddingVertical: 11, paddingHorizontal: 13 }, style]} {...rest} />
@@ -59,7 +59,7 @@ export function H1({ children }: { children: React.ReactNode }) {
   return <Text style={styles.h1}>{children}</Text>;
 }
 export function Muted({ children, style }: { children: React.ReactNode; style?: object }) {
-  return <Text style={[{ color: colors.muted, fontSize: 14 }, style]}>{children}</Text>;
+  return <Text style={[{ color: colors.muted, fontSize: 14, lineHeight: 20 }, style]}>{children}</Text>;
 }
 export function Card({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
   return <View style={[styles.card, style]}>{children}</View>;
@@ -71,6 +71,17 @@ const styles = StyleSheet.create({
   label: { color: colors.muted, fontSize: 13, marginBottom: 4, marginLeft: 4 },
   input: { backgroundColor: colors.card, borderRadius: radius.button, borderWidth: 1, borderColor: colors.line, paddingHorizontal: 14, paddingVertical: 12, fontSize: 16, color: colors.text },
   chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: radius.chip, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, marginRight: 8, marginBottom: 8 },
-  h1: { fontSize: 26, fontWeight: '800', color: colors.text, marginBottom: 12 },
-  card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: colors.line },
+  h1: { fontSize: 28, fontWeight: '800', color: colors.text, marginBottom: 18 },
+  card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 18, marginBottom: 16, borderWidth: 1, borderColor: colors.line },
 });
+
+/** Titled block with consistent spacing, used to group form fields. */
+export function Section({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
+  return (
+    <View style={{ marginBottom: 28 }}>
+      <Text style={{ fontSize: 17, fontWeight: '800', color: colors.text, marginBottom: hint ? 4 : 12 }}>{title}</Text>
+      {hint ? <Text style={{ color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 12 }}>{hint}</Text> : null}
+      {children}
+    </View>
+  );
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NativeScrollEvent, NativeSyntheticEvent, Pressable, ScrollView, Text, View } from 'react-native';
 import { hapticTick } from '../lib/haptics';
+import { playTick } from '../lib/sound';
 import { colors } from '../theme';
 
 export const ITEM_H = 44;
@@ -25,7 +26,7 @@ export function Wheel({ items, index, onIndex, flex = 1 }: { items: string[]; in
     const y = e.nativeEvent.contentOffset.y;
     offset.current = y;
     const i = Math.max(0, Math.min(items.length - 1, Math.round(y / ITEM_H)));
-    if (i !== lastTick.current) { lastTick.current = i; setLive(i); hapticTick(); }
+    if (i !== lastTick.current) { lastTick.current = i; setLive(i); hapticTick(); playTick(); }
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       ref.current?.scrollTo({ y: i * ITEM_H, animated: true });

@@ -2,7 +2,7 @@ import React from 'react';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { colors } from '../theme';
 
-export type IconName = 'heart' | 'chat' | 'calendar' | 'people' | 'person' | 'plus' | 'more' | 'userplus' | 'flag' | 'ban' | 'exit' | 'close' | 'check' | 'back' | 'minus';
+export type IconName = 'heart' | 'chat' | 'calendar' | 'people' | 'person' | 'plus' | 'more' | 'userplus' | 'flag' | 'ban' | 'exit' | 'close' | 'check' | 'back' | 'next' | 'minus';
 
 const PATHS: Record<IconName, string> = {
   heart: 'M12 20s-7-4.35-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.65-7 10-7 10z',
@@ -20,6 +20,7 @@ const PATHS: Record<IconName, string> = {
   close: 'M6 6l12 12 M18 6L6 18',
   check: 'M5 12.5l4.5 4.5L19 7.5',
   back: 'M15 5l-7 7 7 7',
+  next: 'M9 5l7 7-7 7',
 };
 
 export function Icon({ name, size = 22, color = colors.text, strokeWidth = 2, filled = false }:
