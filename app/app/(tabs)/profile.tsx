@@ -7,14 +7,15 @@ import { useSession } from '../../src/lib/session';
 import { Btn, Card, Chip, Field, H1, Muted } from '../../src/components/ui';
 import { hapticError, hapticSuccess } from '../../src/lib/haptics';
 import { notify } from '../../src/lib/notify';
+import { SwitchProfileSheet } from '../../src/components/SwitchProfileSheet';
 import { colors } from '../../src/theme';
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { profile, refreshProfile, switchTo } = useSession();
+  const { profile, refreshProfile } = useSession();
   const [demos, setDemos] = useState<{ id: string; first_name: string }[]>([]);
-  const [switching, setSwitching] = useState<string | null>(null);
+  const [sheet, setSheet] = useState(false);
   const [stats, setStats] = useState({ matches_made: 0, dates_made: 0 });
   const [code, setCode] = useState('');
   const [codeErr, setCodeErr] = useState('');
@@ -74,33 +75,19 @@ export default function ProfileScreen() {
           </View>
         )}
       </Card>
-      {demos.length > 0 && (
-        <Card>
-          <Text style={{ fontWeight: '800', color: colors.text, marginBottom: 6 }}>{t('viewAs.title')}</Text>
-          <Muted style={{ marginBottom: 12 }}>{t('viewAs.hint')}</Muted>
-          <View style={{ gap: 10 }}>
-            {demos.map((d) => (
-              <Btn key={d.id} kind="soft" icon="person" label={switching === d.id ? t('viewAs.switching') : d.first_name} loading={switching === d.id}
-                onPress={async () => {
-                  setSwitching(d.id);
-                  try { await switchTo(d.id, d.first_name); } catch (e: any) { notify(t('viewAs.failed'), e.message); }
-                  setSwitching(null);
-                }} />
-            ))}
-          </View>
-        </Card>
-      )}
       <Card>
         <Text style={{ fontWeight: '800', color: colors.text }}>{t('profile.stats')}</Text>
         <Muted>{t('profile.matchesMade')}: {stats.matches_made}</Muted>
         <Muted>{t('profile.datesMade')}: {stats.dates_made}</Muted>
       </Card>
       <View style={{ gap: 12, marginTop: 4 }}>
-        <Btn label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} />
+        {demos.length > 0 && <Btn label={t('viewAs.button')} icon="people" onPress={() => setSheet(true)} />}
+        <Btn kind={demos.length > 0 ? 'soft' : 'primary'} label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} />
         <Btn kind="soft" label={t('profile.privacy')} onPress={() => router.push('/privacy')} />
         <Btn kind="ghost" label={t('profile.signOut')} onPress={() => supabase.auth.signOut()} />
         <Btn kind="ghost" label={t('profile.delete')} onPress={remove} />
       </View>
+      <SwitchProfileSheet visible={sheet} onClose={() => setSheet(false)} />
     </ScrollView>
   );
 }

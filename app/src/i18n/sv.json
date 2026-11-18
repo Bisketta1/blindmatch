@@ -216,6 +216,8 @@
     "title": "Testkonton",
     "hint": "Byt till ett testkonto för att se hur appen ser ut för dem. Bara du kan göra det.",
     "switching": "Byter…",
-    "failed": "Kunde inte byta konto"
+    "failed": "Kunde inte byta konto",
+    "switchTitle": "Byt profil",
+    "button": "Byt profil"
   }
 }
