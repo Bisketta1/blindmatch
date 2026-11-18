@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
 import { useSession } from '../../src/lib/session';
 import { Btn, Card, Field, H1, Muted } from '../../src/components/ui';
+import { hapticError } from '../../src/lib/haptics';
 import { colors } from '../../src/theme';
 
 type Req = { id: string; requester: string; first_name: string };
@@ -19,6 +20,10 @@ export default function Friends() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [reportFor, setReportFor] = useState<Friend | null>(null);
   const [reason, setReason] = useState('');
+  const [codeErr, setCodeErr] = useState('');
+  const [codeShake, setCodeShake] = useState(0);
+  const [reasonErr, setReasonErr] = useState(false);
+  const [reasonShake, setReasonShake] = useState(0);
 
   const load = useCallback(async () => {
     const uid = session!.user.id;
@@ -35,16 +40,19 @@ export default function Friends() {
   useFocusEffect(useCallback(() => { load(); }, [load]));
 
   async function add() {
+    if (!code.trim()) { setCodeErr(t('errors.code')); setCodeShake((n) => n + 1); hapticError(); return; }
     const { error } = await supabase.rpc('request_friend', { p_code: code });
-    if (error) return notify(t('friends.invalid'));
-    setCode(''); notify(t('friends.sent')); load();
+    if (error) { setCodeErr(t('errors.badCode')); setCodeShake((n) => n + 1); hapticError(); return; }
+    setCodeErr(''); setCode(''); notify(t('friends.sent')); load();
   }
   async function respond(id: string, accept: boolean) { await supabase.rpc('respond_friend', { p_id: id, p_accept: accept }); load(); }
   async function block(f: Friend) {
     await supabase.from('blocks').insert({ blocker: session!.user.id, blocked: f.id }); load();
   }
   async function sendReport() {
-    if (!reportFor || !reason.trim()) return;
+    if (!reportFor) return;
+    if (!reason.trim()) { setReasonErr(true); setReasonShake((n) => n + 1); hapticError(); return; }
+    setReasonErr(false);
     await supabase.from('reports').insert({ reporter: session!.user.id, reported: reportFor.id, reason: reason.trim() });
     setReportFor(null); setReason(''); notify(t('friends.reported'));
   }
@@ -57,8 +65,8 @@ export default function Friends() {
         <Text selectable style={{ fontSize: 32, fontWeight: '800', color: colors.primary, letterSpacing: 2, marginVertical: 6 }}>{profile?.friend_code}</Text>
         <Btn kind="soft" label={t('friends.share')} onPress={() => Share.share({ message: `Lägg till mig på blindmatch! Min kod: ${profile?.friend_code}` })} />
       </Card>
-      <Field label={t('friends.enterCode')} value={code} onChangeText={setCode} autoCapitalize="none" />
-      <Btn label={t('friends.add')} onPress={add} disabled={!code.trim()} />
+      <Field label={t('friends.enterCode')} value={code} onChangeText={(x) => { setCode(x); setCodeErr(''); }} autoCapitalize="none" error={!!codeErr} errorText={codeErr} shake={codeShake} />
+      <Btn label={t('friends.add')} onPress={add} />
 
       {reqs.length > 0 && <Text style={{ fontWeight: '800', marginTop: 24, marginBottom: 8, color: colors.text }}>{t('friends.requests')}</Text>}
       {reqs.map((r) => (
@@ -84,8 +92,8 @@ export default function Friends() {
       ))}
       {reportFor && (
         <Card>
-          <Field label={`${t('friends.report')}: ${reportFor.first_name} – ${t('friends.reportReason')}`} value={reason} onChangeText={setReason} multiline />
-          <Btn label={t('friends.report')} onPress={sendReport} disabled={!reason.trim()} />
+          <Field label={`${t('friends.report')}: ${reportFor.first_name} – ${t('friends.reportReason')}`} value={reason} onChangeText={(x) => { setReason(x); setReasonErr(false); }} multiline error={reasonErr} errorText={t('errors.reason')} shake={reasonShake} />
+          <Btn label={t('friends.report')} onPress={sendReport} />
           <Btn kind="ghost" label={t('common.cancel')} onPress={() => setReportFor(null)} />
         </Card>
       )}

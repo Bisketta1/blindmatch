@@ -7,6 +7,7 @@ import { useSession } from '../../src/lib/session';
 import { useBadges } from '../../src/lib/badges';
 import { ageFromBirthDate } from '../../src/lib/age';
 import { notify } from '../../src/lib/notify';
+import { hapticError } from '../../src/lib/haptics';
 import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
 import { DateField, toDateString, toTimeString } from '../../src/components/DateField';
 import { Icon, IconName } from '../../src/components/Icon';
@@ -49,6 +50,9 @@ export default function ChatScreen() {
   const [time, setTime] = useState('18:00');
   const [dbl, setDbl] = useState(false);
   const [formError, setFormError] = useState('');
+  const [placeErr, setPlaceErr] = useState(false);
+  const [dateErr, setDateErr] = useState(false);
+  const [formShake, setFormShake] = useState(0);
   const [sending, setSending] = useState(false);
   const scroll = useRef<any>(null);
 
@@ -94,16 +98,17 @@ export default function ChatScreen() {
   }
 
   async function propose() {
-    setFormError('');
-    if (!place.trim()) return setFormError(t('chats.errPlace'));
+    setFormError(''); setPlaceErr(false); setDateErr(false);
+    const fail = (msg: string, p: boolean, d: boolean) => { setFormError(msg); setPlaceErr(p); setDateErr(d); setFormShake((n) => n + 1); hapticError(); };
+    if (!place.trim()) return fail(t('chats.errPlace'), true, false);
     const [y, mo, d] = day.split('-').map(Number);
     const [h, mi] = time.split(':').map(Number);
     const when = new Date(y, mo - 1, d, h, mi);
-    if (Number.isNaN(when.getTime()) || when.getTime() <= Date.now()) return setFormError(t('chats.errPast'));
+    if (Number.isNaN(when.getTime()) || when.getTime() <= Date.now()) return fail(t('chats.errPast'), false, true);
     setSending(true);
     const { error } = await supabase.rpc('propose_date', { p_match: id, p_starts: when.toISOString(), p_place: place.trim(), p_double: dbl });
     setSending(false);
-    if (error) return setFormError(error.message.includes('double') ? t('chats.errDouble') : error.message);
+    if (error) return fail(error.message.includes('double') ? t('chats.errDouble') : error.message, false, false);
     setShowForm(false); setPlace(''); setDbl(false);
     await supabase.from('messages').insert({ match_id: id, sender_id: uid, body: `Jag föreslog en dejt: ${place.trim()}, ${day} kl ${time}.` });
     loadProposals();
@@ -207,9 +212,9 @@ export default function ChatScreen() {
         {!openProposal && !showForm && <Btn kind="soft" icon="calendar" label={t('chats.proposeDate')} onPress={() => setShowForm(true)} />}
         {showForm && (
           <Card>
-            <Field label={t('chats.place')} value={place} onChangeText={setPlace} />
-            <DateField label={t('chats.date')} mode="date" value={day} onChange={setDay} minimumDate={new Date()} doneLabel={t('common.done')} initial={tomorrow} />
-            <DateField label={t('chats.time')} mode="time" value={time} onChange={setTime} doneLabel={t('common.done')} />
+            <Field label={t('chats.place')} value={place} onChangeText={(x) => { setPlace(x); setPlaceErr(false); }} error={placeErr} shake={formShake} />
+            <DateField label={t('chats.date')} mode="date" value={day} onChange={setDay} minimumDate={new Date()} doneLabel={t('common.done')} initial={tomorrow} error={dateErr} shake={formShake} />
+            <DateField label={t('chats.time')} mode="time" value={time} onChange={setTime} doneLabel={t('common.done')} error={dateErr} shake={formShake} />
             <Chip label={t('chats.doubleDate')} active={dbl} onPress={() => setDbl(!dbl)} />
             {formError ? <Text style={{ color: colors.danger, marginVertical: 8 }}>{formError}</Text> : null}
             <Btn label={sending ? t('chats.sending') : t('chats.proposeDate')} onPress={propose} loading={sending} />

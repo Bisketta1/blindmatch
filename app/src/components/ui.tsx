@@ -1,5 +1,5 @@
-import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 import { colors, radius } from '../theme';
 import { Icon, IconName } from './Icon';
 
@@ -23,13 +23,27 @@ export function Btn(props: { label: string; icon?: IconName; onPress: () => void
   );
 }
 
-export function Field(props: TextInputProps & { label?: string }) {
-  const { label, style, ...rest } = props;
+/** Wiggles sideways each time `trigger` changes (not on first render). */
+export function Shake({ trigger, children, style }: { trigger?: number; children: React.ReactNode; style?: ViewStyle }) {
+  const x = useRef(new Animated.Value(0)).current;
+  const first = useRef(true);
+  useEffect(() => {
+    if (first.current) { first.current = false; return; }
+    if (!trigger) return;
+    Animated.sequence([-10, 10, -8, 8, -4, 4, 0].map((v) => Animated.timing(x, { toValue: v, duration: 45, useNativeDriver: true }))).start();
+  }, [trigger, x]);
+  return <Animated.View style={[style, { transform: [{ translateX: x }] }]}>{children}</Animated.View>;
+}
+
+export function Field(props: TextInputProps & { label?: string; error?: boolean; errorText?: string; shake?: number }) {
+  const { label, style, error, errorText, shake, ...rest } = props;
   return (
-    <View style={{ marginBottom: 12 }}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
-      <TextInput placeholderTextColor={colors.muted} style={[styles.input, style]} {...rest} />
-    </View>
+    <Shake trigger={shake} style={{ marginBottom: 12 }}>
+      {label ? <Text style={[styles.label, error && { color: colors.danger }]}>{label}</Text> : null}
+      <TextInput placeholderTextColor={colors.muted}
+        style={[styles.input, error && { borderColor: colors.danger, borderWidth: 2, backgroundColor: '#FFF1F0', paddingVertical: 11, paddingHorizontal: 13 }, style]} {...rest} />
+      {error && errorText ? <Text style={{ color: colors.danger, fontSize: 12, marginTop: 4, marginLeft: 4 }}>{errorText}</Text> : null}
+    </Shake>
   );
 }
 

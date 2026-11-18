@@ -6,7 +6,8 @@ import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/session';
 import { isAdult } from '../lib/age';
 import { pickAndUploadPhoto } from '../lib/photos';
-import { Btn, Chip, Field, Muted } from './ui';
+import { Btn, Chip, Field, Muted, Shake } from './ui';
+import { hapticError } from '../lib/haptics';
 import { Icon } from './Icon';
 import { DateField, toDateString } from './DateField';
 import { colors } from '../theme';
@@ -29,6 +30,8 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
   const { session } = useSession();
   const [v, setV] = useState<ProfileValues>(initial);
   const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [submitted, setSubmitted] = useState(false);
+  const [shake, setShake] = useState(0);
   const set = <K extends keyof ProfileValues>(k: K, val: ProfileValues[K]) => setV((cur) => ({ ...cur, [k]: val }));
 
   useEffect(() => { supabase.from('prompts').select('id,text_sv').order('id').then(({ data }) => setPrompts((data as Prompt[]) ?? [])); }, []);
@@ -41,21 +44,27 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
   }
   const filled = Object.values(v.answers).filter((a) => a.trim()).length;
 
+  const errName = submitted && !v.firstName.trim();
+  const errBirth = submitted && mode === 'create' && !isAdult(v.birth);
+  const errPhotos = submitted && v.photos.length === 0;
+
   function submit() {
-    if (mode === 'create' && !isAdult(v.birth)) return notify(t('onboarding.tooYoung'));
-    if (v.photos.length === 0) return notify(t('onboarding.needPhoto'));
+    const bad = !v.firstName.trim() || (mode === 'create' && !isAdult(v.birth)) || v.photos.length === 0;
+    setSubmitted(true);
+    if (bad) { setShake((n) => n + 1); hapticError(); return; }
     onSubmit(v);
   }
 
   return (
     <View>
-      <Field label={t('onboarding.firstName')} value={v.firstName} onChangeText={(x) => set('firstName', x)} />
+      <Field label={t('onboarding.firstName')} value={v.firstName} onChangeText={(x) => set('firstName', x)} error={errName} errorText={t('errors.name')} shake={shake} />
       {mode === 'create'
         ? <DateField label={t('onboarding.birthDate')} mode="date" value={v.birth} onChange={(x) => set('birth', x)}
             placeholder={t('onboarding.birthPlaceholder')} minimumDate={new Date(1940, 0, 1)}
             maximumDate={new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate())}
-            initial={new Date(new Date().getFullYear() - 25, 5, 15, 12)} doneLabel={t('common.done')} />
+            initial={new Date(new Date().getFullYear() - 25, 5, 15, 12)} doneLabel={t('common.done')} error={errBirth} shake={shake} />
         : <Muted style={{ marginBottom: 12 }}>{t('onboarding.birthDate')}: {v.birth}</Muted>}
+      {errBirth && <Muted style={{ color: colors.danger, marginTop: -8, marginBottom: 10 }}>{v.birth ? t('onboarding.tooYoung') : t('errors.birth')}</Muted>}
       <Field label={t('onboarding.city')} value={v.city} onChangeText={(x) => set('city', x)} />
       <Muted style={{ marginBottom: 6 }}>{t('onboarding.gender')}</Muted>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
@@ -70,7 +79,7 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
       </View>
       <Muted style={{ marginTop: 6 }}>{t('onboarding.photos')}</Muted>
       <Muted style={{ marginBottom: 8, fontSize: 12 }}>{t('onboarding.removePhoto')}</Muted>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 }}>
+      <Shake trigger={shake} style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: errPhotos ? 4 : 12, padding: errPhotos ? 6 : 0, borderWidth: errPhotos ? 2 : 0, borderColor: colors.danger, borderRadius: 18, backgroundColor: errPhotos ? '#FFF1F0' : 'transparent' }}>
         {v.photos.map((u) => (
           <Pressable key={u} onPress={() => set('photos', v.photos.filter((x) => x !== u))} style={{ marginRight: 8, marginBottom: 8 }}>
             <Image source={{ uri: u }} style={{ width: 80, height: 106, borderRadius: 14 }} />
@@ -84,7 +93,8 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
             <Icon name="plus" size={28} color={colors.primary} />
           </Pressable>
         )}
-      </View>
+      </Shake>
+      {errPhotos && <Muted style={{ color: colors.danger, marginBottom: 10 }}>{t('onboarding.needPhoto')}</Muted>}
       <Field label={t('onboarding.bio')} value={v.bio} onChangeText={(x) => set('bio', x)} multiline maxLength={500} style={{ minHeight: 80 }} />
       <Muted style={{ marginBottom: 6 }}>{t('onboarding.answers')}</Muted>
       {prompts.map((p) => (
@@ -94,7 +104,7 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
       ))}
       <Chip label={t('onboarding.matchable')} active={v.matchable} onPress={() => set('matchable', !v.matchable)} />
       {mode === 'create' && <Muted style={{ marginVertical: 12 }}>{t('onboarding.consent')}</Muted>}
-      <Btn label={submitLabel} onPress={submit} loading={busy} disabled={!v.firstName.trim() || (mode === 'create' && !v.birth)} style={{ marginTop: 12 }} />
+      <Btn label={submitLabel} onPress={submit} loading={busy} style={{ marginTop: 12 }} />
     </View>
   );
 }

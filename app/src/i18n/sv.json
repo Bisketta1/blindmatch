@@ -167,5 +167,17 @@
     "chat": "Gå till chatten",
     "continue": "Fortsätt swipa",
     "newBody": "Du och {{other}} har en ny match: {{a}} och {{b}}."
+  },
+  "errors": {
+    "required": "Fyll i det här",
+    "email": "Skriv en giltig e-postadress",
+    "password": "Minst 8 tecken",
+    "birth": "Välj ditt födelsedatum",
+    "code": "Skriv en väns kod",
+    "badCode": "Den koden finns inte",
+    "reason": "Berätta vad som hänt",
+    "wrongLogin": "Fel e-post eller lösenord",
+    "name": "Skriv ditt förnamn",
+    "pastDate": "Välj en tid i framtiden"
   }
 }

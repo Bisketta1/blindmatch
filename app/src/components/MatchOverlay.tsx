@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useBadges } from '../lib/badges';
 import { Btn } from './ui';
 import { Icon } from './Icon';
+import { hapticSuccess } from '../lib/haptics';
 import { colors } from '../theme';
 
 const DOTS = Array.from({ length: 12 }, (_, i) => ({ angle: (i / 12) * Math.PI * 2, dist: 110 + (i % 3) * 25, size: 8 + (i % 3) * 3, color: i % 2 ? colors.primary : colors.accent }));
@@ -22,6 +23,7 @@ export function MatchOverlay() {
 
   useEffect(() => {
     if (!match) return;
+    hapticSuccess();
     [fade, heart, burst, text].forEach((v) => v.setValue(0));
     left.setValue(-160); right.setValue(160);
     Animated.sequence([

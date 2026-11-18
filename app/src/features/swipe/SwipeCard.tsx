@@ -1,6 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { decideSwipe, SwipeDirection } from './decision';
+import { hapticLight } from '../../lib/haptics';
 import { colors, radius } from '../../theme';
 
 export type Candidate = {
@@ -26,6 +27,7 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
   const fling = (dir: SwipeDirection, dy = 0, vx = 0) => {
     if (done.current) return;
     done.current = true;
+    hapticLight();
     const duration = Math.max(120, 240 - Math.abs(vx) * 60);
     Animated.timing(pos, { toValue: { x: dir === 'yes' ? W * 1.6 : -W * 1.6, y: dy * 0.6 }, duration, useNativeDriver: false })
       .start(() => latest.current.onSwipe(dir));
