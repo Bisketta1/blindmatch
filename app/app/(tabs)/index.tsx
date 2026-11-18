@@ -16,7 +16,8 @@ const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/S
 
 export default function SwipeScreen() {
   const { t } = useTranslation();
-  const { session } = useSession();
+  const { session, profile } = useSession();
+  const premium = !!profile?.premium;
   const [friends, setFriends] = useState<Friend[]>([]);
   const [single, setSingle] = useState<Friend | null>(null);
   const [deck, setDeck] = useState<Candidate[]>([]);
@@ -63,7 +64,7 @@ export default function SwipeScreen() {
     const { data, error } = await supabase.rpc('swipe', { p_single: single.id, p_candidate: cand.candidate_id, p_vote: dir });
     setBusy(false);
     if (error) return notify(t('common.error'), error.message);
-    if (data.status === 'cap') { setLeft(0); setDeck([]); setNote(t('swipe.cap', { name: single.first_name })); return; }
+    if (data.status === 'cap' && !premium) { setLeft(0); setDeck([]); setNote(t('swipe.cap', { name: single.first_name })); return; }
     if (data.status === 'claimed_by_other') { setNote(t('swipe.claimed')); return; }
     if (typeof data.remaining === 'number') setLeft(data.remaining);
     if (data.matched && data.match_id) showMatch(data.match_id, t('match.body', { a: single.first_name, b: cand.first_name }));
@@ -78,9 +79,9 @@ export default function SwipeScreen() {
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginVertical: 8 }}>
         {friends.map((f) => <Chip key={f.id} label={f.first_name} active={single?.id === f.id} onPress={() => setSingle(f)} />)}
       </View>
-      <Muted style={{ marginBottom: 12 }}>{t('swipe.left', { n: left })}</Muted>
+      <Muted style={{ marginBottom: 12 }}>{premium ? t('swipe.unlimited') : t('swipe.left', { n: left })}</Muted>
       {note ? <Text style={{ color: colors.muted, marginBottom: 12 }}>{note}</Text> : null}
-      {top && left > 0 ? (
+      {top && (premium || left > 0) ? (
         <>
           <SwipeCard key={top.candidate_id} ref={card} candidate={top} onSwipe={onSwipe} onDrag={setDragging} disabled={busy} yesLabel={t('swipe.yes')} noLabel={t('swipe.no')} />
           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 20 }}>

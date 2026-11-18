@@ -76,7 +76,8 @@
     "no": "NEJ",
     "matched": "Det blev en match! Gå till Chattar för att planera dejten.",
     "claimed": "Någon annan hann före på den här.",
-    "matchedTitle": "Match"
+    "matchedTitle": "Match",
+    "unlimited": "Obegränsat med swipes"
   },
   "chats": {
     "title": "Matchmaker-chattar",
@@ -193,5 +194,17 @@
     "name": "Skriv ditt förnamn",
     "pastDate": "Välj en tid i framtiden",
     "answer": "Välj en fråga och skriv ett svar"
+  },
+  "premium": {
+    "title": "Premium",
+    "active": "Premium är aktivt. Du har obegränsat med swipes.",
+    "have": "Har du en premiumkod?",
+    "placeholder": "Skriv koden",
+    "redeem": "Lös in",
+    "bad": "Fel kod",
+    "tooMany": "För många försök. Vänta en stund och försök igen.",
+    "welcomeTitle": "Premium aktiverat",
+    "welcome": "Du har nu obegränsat med swipes.",
+    "empty": "Skriv en kod"
   }
 }

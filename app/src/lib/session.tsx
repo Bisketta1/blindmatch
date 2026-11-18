@@ -4,7 +4,7 @@ import { supabase } from './supabase';
 
 export type Profile = {
   id: string; first_name: string; birth_date: string; city: string | null; gender: string | null;
-  looking_for: string[]; bio: string | null; photos: string[]; matchable: boolean; open_to_double: boolean; friend_code: string;
+  looking_for: string[]; bio: string | null; photos: string[]; matchable: boolean; open_to_double: boolean; friend_code: string; premium: boolean;
 };
 
 type Ctx = { session: Session | null; profile: Profile | null; loading: boolean; refreshProfile: () => Promise<void> };
