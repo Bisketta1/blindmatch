@@ -1,0 +1,4 @@
+-- OPTIONAL dev data: 100 more simple fake profiles (no login possible), emails seed+21..seed+120@blindmatch.test.
+-- Remove with: delete from auth.users where email like 'seed+%@blindmatch.test';
+-- (Already applied to the dev project. The profile text and answers are generic on purpose.)
+-- To re-run elsewhere, copy the DO block from the session history or ask Claude to regenerate it.
