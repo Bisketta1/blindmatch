@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { decideSwipe, SwipeDirection } from './decision';
 import { colors, radius } from '../../theme';
@@ -8,39 +8,55 @@ export type Candidate = {
   answers: { prompt: string; answer: string }[];
 };
 export type SwipeCardHandle = { swipe: (dir: SwipeDirection) => void };
-type Props = { candidate: Candidate; onSwipe: (dir: SwipeDirection) => void; disabled?: boolean; yesLabel: string; noLabel: string };
+type Props = {
+  candidate: Candidate; onSwipe: (dir: SwipeDirection) => void; disabled?: boolean; yesLabel: string; noLabel: string;
+  onDrag?: (active: boolean) => void;
+};
 
 const W = Dimensions.get('window').width;
 
-export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard({ candidate, onSwipe, disabled, yesLabel, noLabel }, ref) {
+export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(props, ref) {
+  const { candidate, yesLabel, noLabel } = props;
+  // Always read the latest props from a ref, so re-renders in the middle of a drag never break the gesture.
+  const latest = useRef(props);
+  latest.current = props;
   const pos = useRef(new Animated.ValueXY()).current;
   const done = useRef(false);
 
-  const fling = (dir: SwipeDirection, dy = 0) => {
+  const fling = (dir: SwipeDirection, dy = 0, vx = 0) => {
     if (done.current) return;
     done.current = true;
-    Animated.timing(pos, { toValue: { x: dir === 'yes' ? W * 1.5 : -W * 1.5, y: dy }, duration: 220, useNativeDriver: false }).start(() => onSwipe(dir));
+    const duration = Math.max(120, 240 - Math.abs(vx) * 60);
+    Animated.timing(pos, { toValue: { x: dir === 'yes' ? W * 1.6 : -W * 1.6, y: dy * 0.6 }, duration, useNativeDriver: false })
+      .start(() => latest.current.onSwipe(dir));
   };
   useImperativeHandle(ref, () => ({ swipe: (d) => fling(d) }));
 
-  const responder = useMemo(
-    () => PanResponder.create({
-      onStartShouldSetPanResponder: () => !disabled,
-      onMoveShouldSetPanResponder: (_, g) => !disabled && Math.abs(g.dx) > 6,
-      onPanResponderMove: Animated.event([null, { dx: pos.x, dy: pos.y }], { useNativeDriver: false }),
+  const responder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => false,
+      // Capture horizontal drags so a parent ScrollView cannot steal the gesture.
+      onMoveShouldSetPanResponderCapture: (_, g) => !latest.current.disabled && !done.current && Math.abs(g.dx) > 5 && Math.abs(g.dx) > Math.abs(g.dy),
+      onMoveShouldSetPanResponder: (_, g) => !latest.current.disabled && !done.current && Math.abs(g.dx) > 5 && Math.abs(g.dx) > Math.abs(g.dy),
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderGrant: () => { pos.stopAnimation(); latest.current.onDrag?.(true); },
+      onPanResponderMove: (_, g) => { pos.setValue({ x: g.dx, y: g.dy * 0.35 }); },
       onPanResponderRelease: (_, g) => {
+        latest.current.onDrag?.(false);
         const dir = decideSwipe(g.dx, g.vx, W);
-        if (dir) fling(dir, g.dy);
-        else Animated.spring(pos, { toValue: { x: 0, y: 0 }, friction: 6, useNativeDriver: false }).start();
+        if (dir) fling(dir, g.dy, g.vx);
+        else Animated.spring(pos, { toValue: { x: 0, y: 0 }, friction: 7, tension: 90, useNativeDriver: false }).start();
+      },
+      onPanResponderTerminate: () => {
+        latest.current.onDrag?.(false);
+        Animated.spring(pos, { toValue: { x: 0, y: 0 }, friction: 7, useNativeDriver: false }).start();
       },
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [disabled, onSwipe],
-  );
+  ).current;
 
-  const rotate = pos.x.interpolate({ inputRange: [-W, 0, W], outputRange: ['-14deg', '0deg', '14deg'] });
-  const yesOpacity = pos.x.interpolate({ inputRange: [0, W * 0.3], outputRange: [0, 1], extrapolate: 'clamp' });
-  const noOpacity = pos.x.interpolate({ inputRange: [-W * 0.3, 0], outputRange: [1, 0], extrapolate: 'clamp' });
+  const rotate = pos.x.interpolate({ inputRange: [-W, 0, W], outputRange: ['-16deg', '0deg', '16deg'] });
+  const yesOpacity = pos.x.interpolate({ inputRange: [0, W * 0.25], outputRange: [0, 1], extrapolate: 'clamp' });
+  const noOpacity = pos.x.interpolate({ inputRange: [-W * 0.25, 0], outputRange: [1, 0], extrapolate: 'clamp' });
 
   return (
     <Animated.View {...responder.panHandlers} style={[styles.card, { transform: [{ translateX: pos.x }, { translateY: pos.y }, { rotate }] }]}>

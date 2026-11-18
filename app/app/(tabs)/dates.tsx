@@ -20,7 +20,7 @@ export default function Dates() {
   async function respond(id: string, accept: boolean) {
     const { data, error } = await supabase.rpc('respond_invite', { p_invite: id, p_accept: accept });
     if (error) Alert.alert(t('common.error'), error.message);
-    else if (data === 'confirmed') Alert.alert('🎉', t('dates.confirmed'));
+    else if (data === 'confirmed') Alert.alert(t('dates.confirmedTitle'), t('dates.confirmed'));
     load();
   }
 

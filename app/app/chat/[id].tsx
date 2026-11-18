@@ -91,7 +91,7 @@ export default function ChatScreen() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView ref={scroll} contentContainerStyle={{ padding: 16, paddingTop: 56 }} keyboardShouldPersistTaps="handled"
         onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: true })}>
-        <Btn kind="ghost" label={`‹ ${t('common.back')}`} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
+        <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
         <Muted style={{ marginBottom: 8 }}>{t('chats.hint')}</Muted>
         {other && (
           <Card>

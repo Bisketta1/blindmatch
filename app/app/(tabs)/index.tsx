@@ -22,6 +22,7 @@ export default function SwipeScreen() {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState('');
   const [ready, setReady] = useState(false);
+  const [dragging, setDragging] = useState(false);
   const card = useRef<SwipeCardHandle>(null);
 
   const loadFriends = useCallback(async () => {
@@ -62,14 +63,14 @@ export default function SwipeScreen() {
     if (data.status === 'cap') { setLeft(0); setDeck([]); setNote(t('swipe.cap', { name: single.first_name })); return; }
     if (data.status === 'claimed_by_other') { setNote(t('swipe.claimed')); return; }
     if (typeof data.remaining === 'number') setLeft(data.remaining);
-    if (data.matched) Alert.alert('💞', t('swipe.matched'));
+    if (data.matched) Alert.alert(t('swipe.matchedTitle'), t('swipe.matched'));
   }
 
   if (!friends.length) return <View style={{ flex: 1, backgroundColor: colors.bg, padding: 24, paddingTop: 80 }}><H1>{t('tabs.swipe')}</H1><Muted>{t('swipe.noFriends')}</Muted></View>;
   const top = deck[0];
 
   return (
-    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 64 }}>
+    <ScrollView scrollEnabled={!dragging} style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 64 }}>
       <Muted>{t('swipe.forWhom')}</Muted>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginVertical: 8 }}>
         {friends.map((f) => <Chip key={f.id} label={f.first_name} active={single?.id === f.id} onPress={() => setSingle(f)} />)}
@@ -78,10 +79,10 @@ export default function SwipeScreen() {
       {note ? <Text style={{ color: colors.muted, marginBottom: 12 }}>{note}</Text> : null}
       {top && left > 0 ? (
         <>
-          <SwipeCard key={top.candidate_id} ref={card} candidate={top} onSwipe={onSwipe} disabled={busy} yesLabel={t('swipe.yes')} noLabel={t('swipe.no')} />
+          <SwipeCard key={top.candidate_id} ref={card} candidate={top} onSwipe={onSwipe} onDrag={setDragging} disabled={busy} yesLabel={t('swipe.yes')} noLabel={t('swipe.no')} />
           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 20 }}>
-            <Btn kind="soft" label={`✕ ${t('swipe.no')}`} onPress={() => card.current?.swipe('no')} style={{ flex: 1 }} />
-            <Btn label={`♥ ${t('swipe.yes')}`} onPress={() => card.current?.swipe('yes')} style={{ flex: 1 }} />
+            <Btn kind="soft" icon="close" label={t('swipe.no')} onPress={() => card.current?.swipe('no')} style={{ flex: 1 }} />
+            <Btn icon="heart" label={t('swipe.yes')} onPress={() => card.current?.swipe('yes')} style={{ flex: 1 }} />
           </View>
         </>
       ) : (

@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
 import { Btn, Field, H1, Muted } from '../../src/components/ui';
+import { Logo } from '../../src/components/Icon';
 import { colors } from '../../src/theme';
 
 export default function SignIn() {
@@ -25,7 +26,8 @@ export default function SignIn() {
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={{ padding: 24, paddingTop: 96 }} keyboardShouldPersistTaps="handled">
-        <Text style={{ fontSize: 40, fontWeight: '800', color: colors.primary }}>{t('appName')}</Text>
+        <Logo size={72} />
+        <Text style={{ fontSize: 40, marginTop: 8, fontWeight: '800', color: colors.primary }}>{t('appName')}</Text>
         <Muted style={{ marginBottom: 32, fontSize: 16 }}>{t('tagline')}</Muted>
         <H1>{t('auth.title')}</H1>
         <Field label={t('auth.email')} value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />

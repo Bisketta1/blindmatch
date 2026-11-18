@@ -1,8 +1,9 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 import { colors, radius } from '../theme';
+import { Icon, IconName } from './Icon';
 
-export function Btn(props: { label: string; onPress: () => void; kind?: 'primary' | 'soft' | 'danger' | 'ghost'; disabled?: boolean; loading?: boolean; style?: ViewStyle }) {
+export function Btn(props: { label: string; icon?: IconName; onPress: () => void; kind?: 'primary' | 'soft' | 'danger' | 'ghost'; disabled?: boolean; loading?: boolean; style?: ViewStyle }) {
   const kind = props.kind ?? 'primary';
   const bg = kind === 'primary' ? colors.primary : kind === 'danger' ? colors.danger : kind === 'soft' ? colors.primarySoft : 'transparent';
   const fg = kind === 'primary' || kind === 'danger' ? '#fff' : colors.primary;
@@ -12,7 +13,12 @@ export function Btn(props: { label: string; onPress: () => void; kind?: 'primary
       onPress={props.onPress}
       disabled={props.disabled || props.loading}
       style={({ pressed }) => [styles.btn, { backgroundColor: bg, opacity: props.disabled ? 0.5 : pressed ? 0.85 : 1 }, props.style]}>
-      {props.loading ? <ActivityIndicator color={fg} /> : <Text style={[styles.btnText, { color: fg }]}>{props.label}</Text>}
+      {props.loading ? <ActivityIndicator color={fg} /> : (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          {props.icon ? <Icon name={props.icon} size={18} color={fg} strokeWidth={2.4} /> : null}
+          <Text style={[styles.btnText, { color: fg }]}>{props.label}</Text>
+        </View>
+      )}
     </Pressable>
   );
 }

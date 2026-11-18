@@ -45,7 +45,7 @@ export default function Friends() {
   async function sendReport() {
     if (!reportFor || !reason.trim()) return;
     await supabase.from('reports').insert({ reporter: session!.user.id, reported: reportFor.id, reason: reason.trim() });
-    setReportFor(null); setReason(''); Alert.alert('✓');
+    setReportFor(null); setReason(''); Alert.alert(t('friends.reported'));
   }
 
   return (
