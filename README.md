@@ -20,5 +20,8 @@ Webbpreview: `npx expo start --web`. Tester: `npm test`.
 2. (Valfritt) Kör `supabase/seed_test_pool.sql` i SQL-editorn för 20 fejkprofiler att swipa på.
 3. Skapa konto i appen, fyll i profilen, lägg till en vän via vänkod.
 
+## Testkonton (dev)
+Skapade direkt i databasen med bekräftad e-post, så inloggning fungerar utan mejl: `prinskassim@gmail.com` (Kassim, vän med Jonathan) och `ella@blindmatch.test` (Ella, vän med Miriam). Lösenordet står i chatten, inte här. Testflöde: logga in som Kassim, swipa ja på Miriam åt Jonathan. Logga in som Ella (annan enhet/webbläsare), swipa ja på Jonathan åt Miriam: då matchar de, och Kassim och Ella får en chatt. Ta bort testdata innan skarp lansering: `delete from auth.users where email like '%@blindmatch.test' or email like 'seed+%';`
+
 ## Regler i korthet
 Max 10 swipes per dag per vän · nej blockerar aldrig · första ja på varje sida tar kandidaten · matchen väntar max 7 dagar (påminnelse efter 48 h, planeras) · båda matchmakers måste godkänna dejten · singlarna ser aldrig vem som swipat.
