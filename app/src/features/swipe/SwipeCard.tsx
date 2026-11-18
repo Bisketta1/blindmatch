@@ -79,7 +79,7 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
 });
 
 const styles = StyleSheet.create({
-  card: { width: '100%', backgroundColor: colors.card, borderRadius: radius.card, overflow: 'hidden', borderWidth: 1, borderColor: colors.line, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
+  card: { userSelect: 'none', width: '100%', backgroundColor: colors.card, borderRadius: radius.card, overflow: 'hidden', borderWidth: 1, borderColor: colors.line, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 12, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
   photo: { width: '100%', height: 360, backgroundColor: colors.primarySoft },
   info: { padding: 16 },
   name: { fontSize: 24, fontWeight: '800', color: colors.text },
