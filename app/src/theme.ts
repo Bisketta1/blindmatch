@@ -10,6 +10,7 @@ export const colors = {
   yes: '#6BBF8E',
   no: '#E8836B',
   danger: '#C9524A',
+  badge: '#E5484D',
 };
 export const radius = { card: 24, button: 16, chip: 999 };
 export const space = (n: number) => n * 4;

@@ -7,6 +7,7 @@ import { useSession } from '../../src/lib/session';
 import { Btn, Chip, H1, Muted } from '../../src/components/ui';
 import { SwipeCard, SwipeCardHandle, Candidate } from '../../src/features/swipe/SwipeCard';
 import type { SwipeDirection } from '../../src/features/swipe/decision';
+import { useBadges } from '../../src/lib/badges';
 import { colors } from '../../src/theme';
 
 type Friend = { id: string; first_name: string };
@@ -24,6 +25,7 @@ export default function SwipeScreen() {
   const [ready, setReady] = useState(false);
   const [dragging, setDragging] = useState(false);
   const card = useRef<SwipeCardHandle>(null);
+  const { showMatch } = useBadges();
 
   const loadFriends = useCallback(async () => {
     const uid = session!.user.id;
@@ -63,7 +65,7 @@ export default function SwipeScreen() {
     if (data.status === 'cap') { setLeft(0); setDeck([]); setNote(t('swipe.cap', { name: single.first_name })); return; }
     if (data.status === 'claimed_by_other') { setNote(t('swipe.claimed')); return; }
     if (typeof data.remaining === 'number') setLeft(data.remaining);
-    if (data.matched) Alert.alert(t('swipe.matchedTitle'), t('swipe.matched'));
+    if (data.matched && data.match_id) showMatch(data.match_id, t('match.body', { a: single.first_name, b: cand.first_name }));
   }
 
   if (!friends.length) return <View style={{ flex: 1, backgroundColor: colors.bg, padding: 24, paddingTop: 80 }}><H1>{t('tabs.swipe')}</H1><Muted>{t('swipe.noFriends')}</Muted></View>;

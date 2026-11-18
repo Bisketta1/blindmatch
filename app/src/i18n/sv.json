@@ -82,7 +82,8 @@
       "declined": "Avböjd",
       "cancelled": "Avbruten"
     },
-    "hint": "Singlarna vet inget än. När ni båda godkänt skickas en blind inbjudan."
+    "hint": "Singlarna vet inget än. När ni båda godkänt skickas en blind inbjudan.",
+    "unread": "nya"
   },
   "dates": {
     "title": "Dina blinddejter",
@@ -136,5 +137,12 @@
   "privacy": {
     "title": "Integritetspolicy",
     "body": "blindmatch är för dig som är 18 år eller äldre. Vi sparar bara det du själv fyller i (profil, bilder, svar, meddelanden) och vilka du är vän med. Dina vänner kan swipa åt dig bara om du valt att vara matchningsbar. Du ser aldrig vem som swipat åt dig förrän en dejt är bokad och båda matchmakers godkänt den. Du kan när som helst stänga av matchning, blockera, rapportera eller radera ditt konto i appen, då tas all din data bort. Vi säljer aldrig din data. Personuppgiftsansvarig kan kontaktas via appens supportadress. Tillsynsmyndighet är Integritetsskyddsmyndigheten (IMY)."
+  },
+  "match": {
+    "title": "Det blev en match!",
+    "body": "{{a}} och {{b}} matchar! Planera dejten med den andra matchmakern.",
+    "chat": "Gå till chatten",
+    "continue": "Fortsätt swipa",
+    "newBody": "Du och {{other}} har en ny match: {{a}} och {{b}}."
   }
 }

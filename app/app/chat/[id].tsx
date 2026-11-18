@@ -7,6 +7,7 @@ import { useSession } from '../../src/lib/session';
 import { ageFromBirthDate } from '../../src/lib/age';
 import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
 import type { MatchRow } from '../(tabs)/chats';
+import { useBadges } from '../../src/lib/badges';
 import { colors, radius } from '../../src/theme';
 
 type Msg = { id: string; sender_id: string; body: string; created_at: string };
@@ -19,6 +20,8 @@ export default function ChatScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { session } = useSession();
   const uid = session!.user.id;
+  const { refresh } = useBadges();
+  const markRead = useCallback(async () => { await supabase.rpc('mark_match_read', { p_match: id }); refresh(true); }, [id, refresh]);
   const [match, setMatch] = useState<MatchRow | null>(null);
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [text, setText] = useState('');
@@ -51,14 +54,15 @@ export default function ChatScreen() {
       const { data: ms } = await supabase.from('messages').select('id,sender_id,body,created_at').eq('match_id', id).order('created_at');
       setMsgs((ms as Msg[]) ?? []);
       loadProposals();
+      markRead();
     })();
     const ch = supabase.channel(`match-${id}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${id}` },
-        (p) => setMsgs((cur) => (cur.some((m) => m.id === (p.new as Msg).id) ? cur : [...cur, p.new as Msg])))
+        (p) => { setMsgs((cur) => (cur.some((m) => m.id === (p.new as Msg).id) ? cur : [...cur, p.new as Msg])); markRead(); })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'date_proposals', filter: `match_id=eq.${id}` }, () => loadProposals())
       .subscribe();
     return () => { supabase.removeChannel(ch); };
-  }, [id, loadProposals]);
+  }, [id, loadProposals, markRead]);
 
   async function send() {
     const body = text.trim(); if (!body) return;

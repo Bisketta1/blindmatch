@@ -4,6 +4,8 @@ import { ActivityIndicator, View } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SessionProvider, useSession } from '../src/lib/session';
+import { BadgeProvider } from '../src/lib/badges';
+import { MatchOverlay } from '../src/components/MatchOverlay';
 import { colors } from '../src/theme';
 
 function Gate() {
@@ -26,8 +28,11 @@ function Gate() {
 export default function RootLayout() {
   return (
     <SessionProvider>
-      <StatusBar style="dark" />
-      <Gate />
+      <BadgeProvider>
+        <StatusBar style="dark" />
+        <Gate />
+        <MatchOverlay />
+      </BadgeProvider>
     </SessionProvider>
   );
 }
