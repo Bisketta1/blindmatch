@@ -67,7 +67,12 @@ export default function ProfileScreen() {
       </Card>
       <Card style={profile.premium ? { backgroundColor: colors.primarySoft, borderColor: colors.primary } : undefined}>
         <Text style={{ fontWeight: '800', color: colors.text, marginBottom: 6 }}>{t('premium.title')}</Text>
-        {profile.premium ? <Muted>{t('premium.active')}</Muted> : (
+        {profile.premium ? (
+          <View>
+            <Muted style={{ marginBottom: 12 }}>{t('premium.active')}</Muted>
+            <Btn kind="soft" label={t('premium.remove')} onPress={async () => { await supabase.rpc('revoke_premium'); await refreshProfile(); setDemos([]); notify(t('premium.title'), t('premium.removed')); }} />
+          </View>
+        ) : (
           <View>
             <Muted style={{ marginBottom: 12 }}>{t('premium.have')}</Muted>
             <Field value={code} onChangeText={(x) => { setCode(x); setCodeErr(''); }} placeholder={t('premium.placeholder')} autoCapitalize="none" autoCorrect={false}

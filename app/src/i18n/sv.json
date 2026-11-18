@@ -208,7 +208,9 @@
     "tooMany": "För många försök. Vänta en stund och försök igen.",
     "welcomeTitle": "Premium aktiverat",
     "welcome": "Du har nu obegränsat med swipes.",
-    "empty": "Skriv en kod"
+    "empty": "Skriv en kod",
+    "remove": "Ta bort Premium",
+    "removed": "Premium är borttaget. Skriv koden igen för att få tillbaka det."
   },
   "viewAs": {
     "banner": "Du visar appen som {{name}}",
