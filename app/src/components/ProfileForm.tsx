@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
+import { notify } from '../lib/notify';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 import { useSession } from '../lib/session';
@@ -7,6 +8,7 @@ import { isAdult } from '../lib/age';
 import { pickAndUploadPhoto } from '../lib/photos';
 import { Btn, Chip, Field, Muted } from './ui';
 import { Icon } from './Icon';
+import { DateField, toDateString } from './DateField';
 import { colors } from '../theme';
 
 export type ProfileValues = {
@@ -35,13 +37,13 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
     try {
       const url = await pickAndUploadPhoto(session!.user.id);
       if (url) setV((cur) => ({ ...cur, photos: [...cur.photos, url].slice(0, 4) }));
-    } catch (e: any) { Alert.alert(t('common.error'), e.message); }
+    } catch (e: any) { notify(t('common.error'), e.message); }
   }
   const filled = Object.values(v.answers).filter((a) => a.trim()).length;
 
   function submit() {
-    if (mode === 'create' && !isAdult(v.birth)) return Alert.alert(t('onboarding.tooYoung'));
-    if (v.photos.length === 0) return Alert.alert(t('onboarding.needPhoto'));
+    if (mode === 'create' && !isAdult(v.birth)) return notify(t('onboarding.tooYoung'));
+    if (v.photos.length === 0) return notify(t('onboarding.needPhoto'));
     onSubmit(v);
   }
 
@@ -49,7 +51,10 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
     <View>
       <Field label={t('onboarding.firstName')} value={v.firstName} onChangeText={(x) => set('firstName', x)} />
       {mode === 'create'
-        ? <Field label={t('onboarding.birthDate')} value={v.birth} onChangeText={(x) => set('birth', x)} placeholder="2000-05-17" />
+        ? <DateField label={t('onboarding.birthDate')} mode="date" value={v.birth} onChange={(x) => set('birth', x)}
+            placeholder={t('onboarding.birthPlaceholder')} minimumDate={new Date(1940, 0, 1)}
+            maximumDate={new Date(new Date().getFullYear() - 18, new Date().getMonth(), new Date().getDate())}
+            initial={new Date(new Date().getFullYear() - 25, 5, 15, 12)} doneLabel={t('common.done')} />
         : <Muted style={{ marginBottom: 12 }}>{t('onboarding.birthDate')}: {v.birth}</Muted>}
       <Field label={t('onboarding.city')} value={v.city} onChangeText={(x) => set('city', x)} />
       <Muted style={{ marginBottom: 6 }}>{t('onboarding.gender')}</Muted>

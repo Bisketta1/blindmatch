@@ -1,18 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
 import { useSession } from '../../src/lib/session';
-import { ageFromBirthDate } from '../../src/lib/age';
-import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
-import type { MatchRow } from '../(tabs)/chats';
 import { useBadges } from '../../src/lib/badges';
+import { ageFromBirthDate } from '../../src/lib/age';
+import { notify } from '../../src/lib/notify';
+import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
+import { DateField, toDateString, toTimeString } from '../../src/components/DateField';
+import { Icon, IconName } from '../../src/components/Icon';
+import type { MatchRow } from '../(tabs)/chats';
 import { colors, radius } from '../../src/theme';
 
 type Msg = { id: string; sender_id: string; body: string; created_at: string };
 type Proposal = { id: string; starts_at: string; place: string; double_date: boolean; status: string; i_approved: boolean };
-type Prof = { id: string; first_name: string; birth_date: string; city: string | null; bio: string | null; photos: string[] };
+type Prof = { id: string; first_name: string; birth_date: string; city: string | null; bio: string | null; photos: string[]; friend_code?: string };
+
+function MenuItem({ icon, label, onPress, danger }: { icon: IconName; label: string; onPress: () => void; danger?: boolean }) {
+  return (
+    <Pressable onPress={onPress} style={({ pressed }) => ({ flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12, paddingHorizontal: 14, opacity: pressed ? 0.6 : 1 })}>
+      <Icon name={icon} size={20} color={danger ? colors.danger : colors.text} />
+      <Text style={{ fontSize: 16, color: danger ? colors.danger : colors.text, fontWeight: '600' }}>{label}</Text>
+    </Pressable>
+  );
+}
 
 export default function ChatScreen() {
   const { t } = useTranslation();
@@ -27,10 +39,17 @@ export default function ChatScreen() {
   const [text, setText] = useState('');
   const [props, setProps] = useState<Proposal[]>([]);
   const [profs, setProfs] = useState<Record<string, Prof & { answers: { prompt: string; answer: string }[] }>>({});
-  const [place, setPlace] = useState('');
-  const [when, setWhen] = useState('');
-  const [dbl, setDbl] = useState(false);
+  const [isFriend, setIsFriend] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [confirmRelease, setConfirmRelease] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [place, setPlace] = useState('');
+  const tomorrow = new Date(Date.now() + 86400000);
+  const [day, setDay] = useState(toDateString(tomorrow));
+  const [time, setTime] = useState('18:00');
+  const [dbl, setDbl] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [sending, setSending] = useState(false);
   const scroll = useRef<any>(null);
 
   const loadProposals = useCallback(async () => {
@@ -44,12 +63,15 @@ export default function ChatScreen() {
       const m = ((data as MatchRow[]) ?? []).find((x) => x.match_id === id) ?? null;
       setMatch(m);
       if (m) {
-        const { data: ps } = await supabase.from('profiles').select('id,first_name,birth_date,city,bio,photos').in('id', [m.other_single, m.my_single]);
-        const { data: ans } = await supabase.from('profile_answers').select('profile_id,answer,prompts(text_sv)').in('profile_id', [m.other_single, m.my_single]).order('position');
+        const ids = [m.other_single, m.my_single, m.other_matchmaker];
+        const { data: ps } = await supabase.from('profiles').select('id,first_name,birth_date,city,bio,photos,friend_code').in('id', ids);
+        const { data: ans } = await supabase.from('profile_answers').select('profile_id,answer,prompts(text_sv)').in('profile_id', ids).order('position');
         const map: any = {};
         (ps ?? []).forEach((p: any) => { map[p.id] = { ...p, answers: [] }; });
-        (ans ?? []).forEach((a: any) => map[a.profile_id]?.answers.push({ prompt: a.prompts?.text_sv ?? '', answer: a.answer }));
+        (ans ?? []).forEach((a: any) => map[a.profile_id]?.answer && map[a.profile_id].answers.push({ prompt: a.prompts?.text_sv ?? '', answer: a.answer }));
         setProfs(map);
+        const { data: fs } = await supabase.from('friendships').select('requester,addressee').or(`requester.eq.${m.other_matchmaker},addressee.eq.${m.other_matchmaker}`);
+        setIsFriend((fs ?? []).length > 0);
       }
       const { data: ms } = await supabase.from('messages').select('id,sender_id,body,created_at').eq('match_id', id).order('created_at');
       setMsgs((ms as Msg[]) ?? []);
@@ -59,55 +81,112 @@ export default function ChatScreen() {
     const ch = supabase.channel(`match-${id}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `match_id=eq.${id}` },
         (p) => { setMsgs((cur) => (cur.some((m) => m.id === (p.new as Msg).id) ? cur : [...cur, p.new as Msg])); markRead(); })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'date_proposals', filter: `match_id=eq.${id}` }, () => loadProposals())
       .subscribe();
-    return () => { supabase.removeChannel(ch); };
+    const poll = setInterval(loadProposals, 6000);
+    return () => { supabase.removeChannel(ch); clearInterval(poll); };
   }, [id, loadProposals, markRead]);
 
   async function send() {
     const body = text.trim(); if (!body) return;
     setText('');
     const { error } = await supabase.from('messages').insert({ match_id: id, sender_id: uid, body });
-    if (error) Alert.alert(t('common.error'), error.message);
+    if (error) notify(t('common.error'), error.message);
   }
+
   async function propose() {
-    const iso = new Date(when.replace(' ', 'T')).toISOString();
-    const { error } = await supabase.rpc('propose_date', { p_match: id, p_starts: iso, p_place: place.trim(), p_double: dbl });
-    if (error) return Alert.alert(t('common.error'), error.message);
-    setShowForm(false); setPlace(''); setWhen(''); loadProposals();
+    setFormError('');
+    if (!place.trim()) return setFormError(t('chats.errPlace'));
+    const [y, mo, d] = day.split('-').map(Number);
+    const [h, mi] = time.split(':').map(Number);
+    const when = new Date(y, mo - 1, d, h, mi);
+    if (Number.isNaN(when.getTime()) || when.getTime() <= Date.now()) return setFormError(t('chats.errPast'));
+    setSending(true);
+    const { error } = await supabase.rpc('propose_date', { p_match: id, p_starts: when.toISOString(), p_place: place.trim(), p_double: dbl });
+    setSending(false);
+    if (error) return setFormError(error.message.includes('double') ? t('chats.errDouble') : error.message);
+    setShowForm(false); setPlace(''); setDbl(false);
+    await supabase.from('messages').insert({ match_id: id, sender_id: uid, body: `Jag föreslog en dejt: ${place.trim()}, ${day} kl ${time}.` });
+    loadProposals();
   }
+
   async function approve(pid: string) {
     const { error } = await supabase.rpc('approve_date', { p_proposal: pid });
-    if (error) Alert.alert(t('common.error'), error.message);
-    loadProposals();
+    if (error) notify(t('common.error'), error.message);
+    loadProposals(); refresh(true);
+  }
+
+  const other = match ? profs[match.other_matchmaker] : undefined;
+  async function addFriend() {
+    setMenu(false);
+    if (!other?.friend_code) return;
+    const { error } = await supabase.rpc('request_friend', { p_code: other.friend_code });
+    notify(error ? t('common.error') : t('chats.menu.friendSent'), error?.message);
   }
   async function release() {
     if (!match) return;
     await supabase.rpc('release_claim', { p_claim: match.my_claim_id });
-    router.back();
+    setMenu(false); refresh(true); router.back();
+  }
+  async function report() {
+    if (!match) return;
+    setMenu(false);
+    await supabase.from('reports').insert({ reporter: uid, reported: match.other_matchmaker, reason: 'Rapporterad från matchmaker-chatt' });
+    notify(t('chats.menu.reported'));
+  }
+  async function block() {
+    if (!match) return;
+    await supabase.from('blocks').insert({ blocker: uid, blocked: match.other_matchmaker });
+    setMenu(false); refresh(true); router.back();
   }
 
   if (!match) return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
-  const other = profs[match.other_single];
+  const otherSingle = profs[match.other_single];
   const openProposal = props.find((p) => ['pending', 'sent', 'confirmed'].includes(p.status));
+  const name = match.other_matchmaker_name;
 
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView ref={scroll} contentContainerStyle={{ padding: 16, paddingTop: 56 }} keyboardShouldPersistTaps="handled"
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 52, paddingHorizontal: 8, paddingBottom: 6, backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.line }}>
+        <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} />
+        <Text style={{ fontSize: 18, fontWeight: '800', color: colors.text }}>{name}</Text>
+        <Pressable accessibilityLabel={t('chats.menu.title')} onPress={() => { setConfirmRelease(false); setMenu(true); }} style={{ padding: 12 }}>
+          <Icon name="more" size={24} />
+        </Pressable>
+      </View>
+
+      <Modal transparent visible={menu} animationType="fade" onRequestClose={() => setMenu(false)}>
+        <Pressable style={{ flex: 1 }} onPress={() => setMenu(false)}>
+          <View style={{ position: 'absolute', top: 96, right: 12, backgroundColor: colors.card, borderRadius: radius.card, borderWidth: 1, borderColor: colors.line, paddingVertical: 6, minWidth: 250, shadowColor: '#000', shadowOpacity: 0.15, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8 }}>
+            {!isFriend && <MenuItem icon="userplus" label={t('chats.menu.addFriend', { name })} onPress={addFriend} />}
+            {confirmRelease ? (
+              <View style={{ padding: 14 }}>
+                <Text style={{ color: colors.text, marginBottom: 10 }}>{t('chats.menu.releaseAsk')}</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <Btn kind="danger" label={t('chats.menu.releaseYes')} onPress={release} style={{ flex: 1 }} />
+                  <Btn kind="soft" label={t('common.cancel')} onPress={() => setConfirmRelease(false)} style={{ flex: 1 }} />
+                </View>
+              </View>
+            ) : <MenuItem icon="exit" label={t('chats.menu.release')} onPress={() => setConfirmRelease(true)} />}
+            <MenuItem icon="flag" label={t('chats.menu.report', { name })} onPress={report} />
+            <MenuItem icon="ban" danger label={t('chats.menu.block', { name })} onPress={block} />
+          </View>
+        </Pressable>
+      </Modal>
+
+      <ScrollView ref={scroll} contentContainerStyle={{ padding: 16 }} keyboardShouldPersistTaps="handled"
         onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: true })}>
-        <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
         <Muted style={{ marginBottom: 8 }}>{t('chats.hint')}</Muted>
-        {other && (
+        {otherSingle && (
           <Card>
             <View style={{ flexDirection: 'row' }}>
-              {other.photos[0] ? <Image source={{ uri: other.photos[0] }} style={{ width: 72, height: 96, borderRadius: 14, marginRight: 12 }} /> : null}
+              {otherSingle.photos[0] ? <Image source={{ uri: otherSingle.photos[0] }} style={{ width: 72, height: 96, borderRadius: 14, marginRight: 12 }} /> : null}
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>{other.first_name}, {ageFromBirthDate(other.birth_date)}</Text>
-                {other.city ? <Muted>{other.city}</Muted> : null}
-                {other.bio ? <Text style={{ color: colors.text, marginTop: 4 }}>{other.bio}</Text> : null}
+                <Text style={{ fontSize: 20, fontWeight: '800', color: colors.text }}>{otherSingle.first_name}, {ageFromBirthDate(otherSingle.birth_date)}</Text>
+                {otherSingle.city ? <Muted>{otherSingle.city}</Muted> : null}
+                {otherSingle.bio ? <Text style={{ color: colors.text, marginTop: 4 }}>{otherSingle.bio}</Text> : null}
               </View>
             </View>
-            {other.answers.map((a) => <Muted key={a.prompt} style={{ marginTop: 6 }}>{a.prompt} <Text style={{ color: colors.text, fontWeight: '600' }}>{a.answer}</Text></Muted>)}
+            {otherSingle.answers.map((a) => <Muted key={a.prompt} style={{ marginTop: 6 }}>{a.prompt} <Text style={{ color: colors.text, fontWeight: '600' }}>{a.answer}</Text></Muted>)}
           </Card>
         )}
         {msgs.map((m) => (
@@ -119,23 +198,24 @@ export default function ChatScreen() {
         {props.map((p) => (
           <Card key={p.id} style={{ backgroundColor: colors.primarySoft }}>
             <Text style={{ fontWeight: '800', color: colors.text }}>{p.place}</Text>
-            <Muted>{new Date(p.starts_at).toLocaleString('sv-SE')}{p.double_date ? ' · dubbeldejt' : ''}</Muted>
+            <Muted>{new Date(p.starts_at).toLocaleString('sv-SE', { dateStyle: 'medium', timeStyle: 'short' })}{p.double_date ? ' · dubbeldejt' : ''}</Muted>
             <Text style={{ marginVertical: 4, color: colors.text }}>{t(`chats.status.${p.status}`)}</Text>
             {p.status === 'pending' && !p.i_approved && <Btn label={t('chats.approve')} onPress={() => approve(p.id)} />}
             {p.status === 'pending' && p.i_approved && <Muted>{t('chats.waitingOther')}</Muted>}
           </Card>
         ))}
-        {!openProposal && !showForm && <Btn kind="soft" label={t('chats.proposeDate')} onPress={() => setShowForm(true)} />}
+        {!openProposal && !showForm && <Btn kind="soft" icon="calendar" label={t('chats.proposeDate')} onPress={() => setShowForm(true)} />}
         {showForm && (
           <Card>
             <Field label={t('chats.place')} value={place} onChangeText={setPlace} />
-            <Field label={t('chats.when')} value={when} onChangeText={setWhen} placeholder="2026-11-28 18:30" />
+            <DateField label={t('chats.date')} mode="date" value={day} onChange={setDay} minimumDate={new Date()} doneLabel={t('common.done')} initial={tomorrow} />
+            <DateField label={t('chats.time')} mode="time" value={time} onChange={setTime} doneLabel={t('common.done')} />
             <Chip label={t('chats.doubleDate')} active={dbl} onPress={() => setDbl(!dbl)} />
-            <Btn label={t('chats.proposeDate')} onPress={propose} disabled={!place.trim() || !when.trim()} />
-            <Btn kind="ghost" label={t('common.cancel')} onPress={() => setShowForm(false)} />
+            {formError ? <Text style={{ color: colors.danger, marginVertical: 8 }}>{formError}</Text> : null}
+            <Btn label={sending ? t('chats.sending') : t('chats.proposeDate')} onPress={propose} loading={sending} />
+            <Btn kind="ghost" label={t('common.cancel')} onPress={() => { setShowForm(false); setFormError(''); }} />
           </Card>
         )}
-        <Btn kind="ghost" label={t('chats.release')} onPress={release} style={{ marginTop: 12 }} />
       </ScrollView>
       <View style={{ flexDirection: 'row', padding: 12, gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
         <View style={{ flex: 1 }}><Field value={text} onChangeText={setText} placeholder={t('chats.typeMessage')} onSubmitEditing={send} /></View>

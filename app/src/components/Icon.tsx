@@ -2,7 +2,7 @@ import React from 'react';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { colors } from '../theme';
 
-export type IconName = 'heart' | 'chat' | 'calendar' | 'people' | 'person' | 'plus' | 'close' | 'check' | 'back' | 'minus';
+export type IconName = 'heart' | 'chat' | 'calendar' | 'people' | 'person' | 'plus' | 'more' | 'userplus' | 'flag' | 'ban' | 'exit' | 'close' | 'check' | 'back' | 'minus';
 
 const PATHS: Record<IconName, string> = {
   heart: 'M12 20s-7-4.35-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.65-7 10-7 10z',
@@ -12,6 +12,11 @@ const PATHS: Record<IconName, string> = {
   person: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M4 20c0-3.5 3.6-6 8-6s8 2.5 8 6',
   plus: 'M12 5v14 M5 12h14',
   minus: 'M5 12h14',
+  more: 'M12 5.5v.01 M12 12v.01 M12 18.5v.01',
+  userplus: 'M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z M3 20c0-3.5 3.1-6 7-6 M18 8v6 M15 11h6',
+  flag: 'M5 21V4 M5 4h11l-2 4 2 4H5',
+  ban: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z M5.6 5.6l12.8 12.8',
+  exit: 'M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4 M16 8l4 4-4 4 M20 12H9',
   close: 'M6 6l12 12 M18 6L6 18',
   check: 'M5 12.5l4.5 4.5L19 7.5',
   back: 'M15 5l-7 7 7 7',
@@ -21,7 +26,7 @@ export function Icon({ name, size = 22, color = colors.text, strokeWidth = 2, fi
   { name: IconName; size?: number; color?: string; strokeWidth?: number; filled?: boolean }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d={PATHS[name]} stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" fill={filled ? color : 'none'} />
+      <Path d={PATHS[name]} stroke={color} strokeWidth={name === 'more' ? 3.4 : strokeWidth} strokeLinecap="round" strokeLinejoin="round" fill={filled ? color : 'none'} />
     </Svg>
   );
 }

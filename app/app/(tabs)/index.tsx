@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import { notify } from '../../src/lib/notify';
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
@@ -61,7 +62,7 @@ export default function SwipeScreen() {
     setBusy(true);
     const { data, error } = await supabase.rpc('swipe', { p_single: single.id, p_candidate: cand.candidate_id, p_vote: dir });
     setBusy(false);
-    if (error) return Alert.alert(t('common.error'), error.message);
+    if (error) return notify(t('common.error'), error.message);
     if (data.status === 'cap') { setLeft(0); setDeck([]); setNote(t('swipe.cap', { name: single.first_name })); return; }
     if (data.status === 'claimed_by_other') { setNote(t('swipe.claimed')); return; }
     if (typeof data.remaining === 'number') setLeft(data.remaining);

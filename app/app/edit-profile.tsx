@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, View } from 'react-native';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { notify } from '../src/lib/notify';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../src/lib/supabase';
@@ -34,7 +35,7 @@ export default function EditProfile() {
       first_name: v.firstName.trim(), city: v.city.trim() || null, gender: v.gender || null, looking_for: v.looking,
       bio: v.bio.trim() || null, photos: v.photos, matchable: v.matchable,
     }).eq('id', uid);
-    if (error) { setBusy(false); return Alert.alert(t('common.error'), error.message); }
+    if (error) { setBusy(false); return notify(t('common.error'), error.message); }
     await supabase.from('profile_answers').delete().eq('profile_id', uid);
     const rows = Object.entries(v.answers).filter(([, a]) => a.trim()).slice(0, 3)
       .map(([pid, answer], i) => ({ profile_id: uid, prompt_id: Number(pid), answer: answer.trim(), position: i }));

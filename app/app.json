@@ -25,7 +25,8 @@
         {
           "photosPermission": "Appen behöver dina bilder för att visa din profil."
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "scheme": "blindmatch"
   }

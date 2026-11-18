@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { Alert, ScrollView, Share, Text, View } from 'react-native';
+import { ScrollView, Share, Text, View } from 'react-native';
+import { notify } from '../../src/lib/notify';
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
@@ -35,8 +36,8 @@ export default function Friends() {
 
   async function add() {
     const { error } = await supabase.rpc('request_friend', { p_code: code });
-    if (error) return Alert.alert(t('friends.invalid'));
-    setCode(''); Alert.alert(t('friends.sent')); load();
+    if (error) return notify(t('friends.invalid'));
+    setCode(''); notify(t('friends.sent')); load();
   }
   async function respond(id: string, accept: boolean) { await supabase.rpc('respond_friend', { p_id: id, p_accept: accept }); load(); }
   async function block(f: Friend) {
@@ -45,7 +46,7 @@ export default function Friends() {
   async function sendReport() {
     if (!reportFor || !reason.trim()) return;
     await supabase.from('reports').insert({ reporter: session!.user.id, reported: reportFor.id, reason: reason.trim() });
-    setReportFor(null); setReason(''); Alert.alert(t('friends.reported'));
+    setReportFor(null); setReason(''); notify(t('friends.reported'));
   }
 
   return (

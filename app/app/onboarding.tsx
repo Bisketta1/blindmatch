@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Alert, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
+import { notify } from '../src/lib/notify';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../src/lib/supabase';
 import { useSession } from '../src/lib/session';
@@ -19,7 +20,7 @@ export default function Onboarding() {
       id: uid, first_name: v.firstName.trim(), birth_date: v.birth, city: v.city.trim() || null, gender: v.gender || null,
       looking_for: v.looking, bio: v.bio.trim() || null, photos: v.photos, matchable: v.matchable,
     });
-    if (error) { setBusy(false); return Alert.alert(t('common.error'), error.message); }
+    if (error) { setBusy(false); return notify(t('common.error'), error.message); }
     const rows = Object.entries(v.answers).filter(([, a]) => a.trim()).slice(0, 3)
       .map(([pid, answer], i) => ({ profile_id: uid, prompt_id: Number(pid), answer: answer.trim(), position: i }));
     if (rows.length) await supabase.from('profile_answers').insert(rows);

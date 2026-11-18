@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
+import { notify } from '../../src/lib/notify';
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
@@ -19,8 +20,8 @@ export default function Dates() {
 
   async function respond(id: string, accept: boolean) {
     const { data, error } = await supabase.rpc('respond_invite', { p_invite: id, p_accept: accept });
-    if (error) Alert.alert(t('common.error'), error.message);
-    else if (data === 'confirmed') Alert.alert(t('dates.confirmedTitle'), t('dates.confirmed'));
+    if (error) notify(t('common.error'), error.message);
+    else if (data === 'confirmed') notify(t('dates.confirmedTitle'), t('dates.confirmed'));
     load();
   }
 

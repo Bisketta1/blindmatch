@@ -8,7 +8,10 @@
     "loading": "Laddar…",
     "error": "Något gick fel, försök igen",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "done": "Klar",
+    "pickDate": "Välj datum",
+    "pickTime": "Välj tid"
   },
   "auth": {
     "title": "Välkommen",
@@ -36,7 +39,8 @@
     "finish": "Klar",
     "tooYoung": "Du måste vara 18 år eller äldre.",
     "needPhoto": "Lägg till minst en bild.",
-    "removePhoto": "Tryck på en bild för att ta bort den"
+    "removePhoto": "Tryck på en bild för att ta bort den",
+    "birthPlaceholder": "Välj födelsedatum"
   },
   "gender": {
     "man": "Man",
@@ -83,7 +87,26 @@
       "cancelled": "Avbruten"
     },
     "hint": "Singlarna vet inget än. När ni båda godkänt skickas en blind inbjudan.",
-    "unread": "nya"
+    "unread": "nya",
+    "date": "Datum",
+    "time": "Tid",
+    "sending": "Skickar…",
+    "sentOk": "Dejtförslaget är skickat. Väntar på den andra matchmakern.",
+    "errPast": "Välj en tid som ligger i framtiden.",
+    "errPlace": "Skriv var ni ska träffas.",
+    "errDouble": "Dubbeldejt går bara om båda har sagt ja till det.",
+    "menu": {
+      "title": "Mer",
+      "addFriend": "Lägg till {{name}} som vän",
+      "friendSent": "Vänförfrågan skickad",
+      "release": "Släpp den här matchen",
+      "releaseAsk": "Släppa matchen? Då kan andra matchmakers ta över.",
+      "releaseYes": "Ja, släpp",
+      "report": "Rapportera {{name}}",
+      "reported": "Tack, vi tittar på det",
+      "block": "Blockera {{name}}",
+      "blocked": "Blockerad"
+    }
   },
   "dates": {
     "title": "Dina blinddejter",
