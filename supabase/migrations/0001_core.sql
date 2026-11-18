@@ -476,5 +476,5 @@ insert into public.prompts (text_sv, text_en) values
  ('Du ska dejta mig om du gillar', 'Date me if you like'),
  ('Det bästa jag lagat är', 'The best thing I have cooked is'),
  ('Jag kan lära dig att', 'I can teach you to'),
- ('Mitt märkligaste talang är', 'My weirdest talent is'),
+ ('Min märkligaste talang är', 'My weirdest talent is'),
  ('Ett äventyr jag vill ha är', 'An adventure I want is');
