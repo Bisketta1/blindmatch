@@ -21,6 +21,7 @@ export default function SwipeScreen() {
   const [left, setLeft] = useState(10);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState('');
+  const [ready, setReady] = useState(false);
   const card = useRef<SwipeCardHandle>(null);
 
   const loadFriends = useCallback(async () => {
@@ -36,6 +37,7 @@ export default function SwipeScreen() {
 
   const loadDeck = useCallback(async (s: Friend | null) => {
     if (!s) return;
+    setReady(false);
     const [{ data }, { count }] = await Promise.all([
       supabase.rpc('get_deck', { p_single: s.id }),
       supabase.from('swipes').select('id', { count: 'exact', head: true }).eq('single_id', s.id).eq('swipe_day', today()),
@@ -43,6 +45,7 @@ export default function SwipeScreen() {
     setDeck((data as Candidate[]) ?? []);
     setLeft(Math.max(0, 10 - (count ?? 0)));
     setNote('');
+    setReady(true);
   }, []);
 
   useFocusEffect(useCallback(() => { loadFriends(); }, [loadFriends]));
@@ -82,7 +85,7 @@ export default function SwipeScreen() {
           </View>
         </>
       ) : (
-        !note && <Muted>{t('swipe.empty')}</Muted>
+        !note && <Muted>{ready ? t('swipe.empty') : t('common.loading')}</Muted>
       )}
     </ScrollView>
   );
