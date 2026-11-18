@@ -7,7 +7,6 @@ declare
   mi2 uuid := gen_random_uuid();
   r jsonb; cnt int; mid uuid; pid uuid; inv record; claim_id uuid; i int;
   extra uuid[] := '{}'; x uuid;
-  procedure_dummy int;
 begin
   -- ---- setup as superuser ----
   for x in select unnest(array[j,n,m,mi,e,s,mi2]) loop
@@ -108,7 +107,8 @@ begin
   if inv.other_first_name <> 'Miriam' or inv.clues->0->>'answer' <> 'sushi och bokhandlar'
      or inv.credit not like '%Mikael%' or inv.credit not like '%Ella%' then
     raise exception 'FAIL 9: invite wrong %', to_jsonb(inv); end if;
-  if to_jsonb(inv) ? 'photos' then raise exception 'FAIL 9b: photo in invite'; end if;
+  select count(*) into cnt from profiles where id = mi;
+  if cnt <> 0 then raise exception 'FAIL 9b: single can read Miriam profile/photos'; end if;
   if respond_invite(inv.invite_id, true) <> 'waiting' then raise exception 'FAIL 9c'; end if;
   perform set_config('request.jwt.claims', json_build_object('sub', mi, 'role', 'authenticated')::text, true);
   perform set_config('request.jwt.claim.sub', mi::text, true);

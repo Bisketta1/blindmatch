@@ -100,8 +100,8 @@ create unique index claims_one_active on public.claims (single_id, candidate_id)
 
 create table public.matches (
   id uuid primary key default gen_random_uuid(),
-  claim_a uuid not null references public.claims(id),
-  claim_b uuid not null references public.claims(id),
+  claim_a uuid not null references public.claims(id) on delete cascade,
+  claim_b uuid not null references public.claims(id) on delete cascade,
   single_a uuid not null references public.profiles(id) on delete cascade,
   single_b uuid not null references public.profiles(id) on delete cascade,
   status text not null default 'active' check (status in ('active','cancelled','dated')),
@@ -144,25 +144,25 @@ create table public.date_invites (
 
 -- ---------- private helpers (not exposed through the API) ----------
 create function private.are_friends(a uuid, b uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select exists (select 1 from friendships f where f.status = 'accepted'
     and ((f.requester = a and f.addressee = b) or (f.requester = b and f.addressee = a)));
 $$;
 
 create function private.is_blocked(a uuid, b uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select exists (select 1 from blocks where (blocker = a and blocked = b) or (blocker = b and blocked = a));
 $$;
 
 create function private.is_match_owner(p_match uuid, p_user uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select exists (select 1 from matches m
     join claims ca on ca.id = m.claim_a join claims cb on cb.id = m.claim_b
     where m.id = p_match and (ca.matchmaker_id = p_user or cb.matchmaker_id = p_user));
 $$;
 
 create function private.can_see_profile(viewer uuid, target uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select viewer = target
     or (private.are_friends(viewer, target) and not private.is_blocked(viewer, target))
     or exists (select 1 from matches m
@@ -174,7 +174,7 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 create function private.is_eligible_candidate(me uuid, p_single uuid, cand uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select exists (
     select 1 from profiles p join profiles s on s.id = p_single
     where p.id = cand and p.matchable and s.matchable
@@ -184,13 +184,22 @@ language sql stable security definer set search_path = public as $$
       and not exists (select 1 from muted_matchmakers mm where mm.single_id = p_single and mm.matchmaker_id = me)
       and not private.are_friends(me, cand)
       and not private.are_friends(p_single, cand)
-      and not private.is_blocked(me, cand) and not private.is_blocked(p_single, cand)
+      and not private.is_blocked(me, cand) and not private.is_blocked(p_single, cand) and not private.is_blocked(me, p_single)
       and not exists (select 1 from claims c where c.single_id = p_single and c.candidate_id = cand and c.status = 'active')
       and (s.looking_for = '{}' or p.gender = any (s.looking_for))
       and (p.looking_for = '{}' or s.gender = any (p.looking_for))
       and (s.city is null or p.city is null or lower(s.city) = lower(p.city))
   );
 $$;
+
+create function private.on_block() returns trigger language plpgsql security definer set search_path = public, pg_temp as $$
+begin
+  delete from friendships where (requester = new.blocker and addressee = new.blocked) or (requester = new.blocked and addressee = new.blocker);
+  update claims set status = 'released', released_at = now()
+    where status = 'active' and ((matchmaker_id = new.blocker and single_id = new.blocked) or (matchmaker_id = new.blocked and single_id = new.blocker));
+  return new;
+end $$;
+create trigger blocks_cleanup after insert on public.blocks for each row execute function private.on_block();
 
 -- ---------- RLS ----------
 alter table public.profiles enable row level security;
@@ -236,13 +245,15 @@ create policy proposals_select on public.date_proposals for select to authentica
 
 -- ---------- public RPC functions ----------
 create function public.request_friend(p_code text) returns uuid
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare me uuid := auth.uid(); target uuid; fid uuid;
 begin
   if me is null then raise exception 'not authenticated'; end if;
   select id into target from profiles where friend_code = lower(trim(p_code));
   if target is null or target = me then raise exception 'invalid code'; end if;
   if private.is_blocked(me, target) then raise exception 'invalid code'; end if;
+  update friendships set status = 'accepted' where requester = target and addressee = me and status = 'pending' returning id into fid;
+  if fid is not null then return fid; end if;
   insert into friendships (requester, addressee) values (me, target)
     on conflict (least(requester, addressee), greatest(requester, addressee)) do nothing
     returning id into fid;
@@ -250,7 +261,7 @@ begin
 end $$;
 
 create function public.respond_friend(p_id uuid, p_accept boolean) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if p_accept then
     update friendships set status = 'accepted' where id = p_id and addressee = auth.uid() and status = 'pending';
@@ -261,7 +272,7 @@ end $$;
 
 create function public.get_deck(p_single uuid)
 returns table (candidate_id uuid, first_name text, age int, city text, bio text, photos text[], answers jsonb)
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select p.id, p.first_name, extract(year from age(p.birth_date))::int, p.city, p.bio, p.photos,
     coalesce((select jsonb_agg(jsonb_build_object('prompt', pr.text_sv, 'answer', a.answer) order by a.position)
               from profile_answers a join prompts pr on pr.id = a.prompt_id where a.profile_id = p.id), '[]'::jsonb)
@@ -279,7 +290,7 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 create function public.swipe(p_single uuid, p_candidate uuid, p_vote text) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   me uuid := auth.uid();
   today date := (now() at time zone 'Europe/Stockholm')::date;
@@ -300,6 +311,7 @@ begin
   if p_vote = 'no' then
     return jsonb_build_object('status', 'ok', 'remaining', 9 - n, 'claimed', false, 'matched', false);
   end if;
+  perform pg_advisory_xact_lock(hashtext('pair' || least(p_single, p_candidate)::text || greatest(p_single, p_candidate)::text));
   insert into claims (single_id, candidate_id, matchmaker_id) values (p_single, p_candidate, me)
     on conflict (single_id, candidate_id) where status = 'active' do nothing returning id into v_claim;
   if v_claim is null then
@@ -315,25 +327,40 @@ begin
 end $$;
 
 create function public.release_claim(p_claim uuid) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
+declare c claims%rowtype;
 begin
+  select * into c from claims where id = p_claim and matchmaker_id = auth.uid();
+  if not found then return; end if;
+  perform pg_advisory_xact_lock(hashtext('pair' || least(c.single_id, c.candidate_id)::text || greatest(c.single_id, c.candidate_id)::text));
   update claims set status = 'released', released_at = now()
     where id = p_claim and matchmaker_id = auth.uid() and status = 'active';
   if not found then return; end if;
   update matches set status = 'cancelled' where status = 'active' and p_claim in (claim_a, claim_b);
   update date_proposals set status = 'cancelled'
     where status in ('pending','sent') and match_id in (select id from matches where p_claim in (claim_a, claim_b));
+  update date_invites set status = 'declined', responded_at = now()
+    where status = 'sent' and proposal_id in (select id from date_proposals where status = 'cancelled');
 end $$;
+
+create function private.touch_match() returns trigger language plpgsql security definer set search_path = public, pg_temp as $$
+begin
+  update matches set expires_at = now() + interval '7 days' where id = new.match_id and status = 'active';
+  return new;
+end $$;
+create trigger messages_touch after insert on public.messages for each row execute function private.touch_match();
+create trigger proposals_touch after insert or update on public.date_proposals for each row execute function private.touch_match();
 
 -- housekeeping: call from a scheduled job (service role / pg_cron), not exposed to clients
 create function private.release_stale_claims() returns int
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare n int := 0; r record;
 begin
   for r in select id from matches where status = 'active' and expires_at < now()
     and not exists (select 1 from date_proposals d where d.match_id = matches.id and d.status in ('sent','confirmed'))
   loop
     update matches set status = 'cancelled' where id = r.id;
+    update date_proposals set status = 'cancelled' where match_id = r.id and status = 'pending';
     update claims set status = 'released', released_at = now()
       where id in (select claim_a from matches where id = r.id union select claim_b from matches where id = r.id) and status = 'active';
     n := n + 1;
@@ -345,7 +372,7 @@ begin
 end $$;
 
 create function public.propose_date(p_match uuid, p_starts timestamptz, p_place text, p_double boolean default false) returns uuid
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare me uuid := auth.uid(); m matches%rowtype; ca claims%rowtype; cb claims%rowtype; pid uuid;
 begin
   select * into m from matches where id = p_match and status = 'active';
@@ -361,30 +388,31 @@ begin
 end $$;
 
 create function public.approve_date(p_proposal uuid) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare me uuid := auth.uid(); d date_proposals%rowtype; m matches%rowtype; ca claims%rowtype; cb claims%rowtype;
 begin
-  select * into d from date_proposals where id = p_proposal and status = 'pending';
+  select * into d from date_proposals where id = p_proposal and status = 'pending' for update;
   if not found then raise exception 'no pending proposal'; end if;
+  if d.starts_at <= now() then raise exception 'date is in the past'; end if;
   select * into m from matches where id = d.match_id and status = 'active';
   if not found then raise exception 'match not active'; end if;
   select * into ca from claims where id = m.claim_a; select * into cb from claims where id = m.claim_b;
-  if me = ca.matchmaker_id then d.approved_a := true;
-  elsif me = cb.matchmaker_id then d.approved_b := true;
-  else raise exception 'not allowed'; end if;
+  if me not in (ca.matchmaker_id, cb.matchmaker_id) then raise exception 'not allowed'; end if;
+  update date_proposals set approved_a = approved_a or (me = ca.matchmaker_id),
+                            approved_b = approved_b or (me = cb.matchmaker_id)
+    where id = d.id returning * into d;
   if d.approved_a and d.approved_b then
-    update date_proposals set approved_a = true, approved_b = true, status = 'sent' where id = d.id;
+    update date_proposals set status = 'sent' where id = d.id;
     insert into date_invites (proposal_id, single_id) values (d.id, m.single_a), (d.id, m.single_b);
     return 'sent';
   end if;
-  update date_proposals set approved_a = d.approved_a, approved_b = d.approved_b where id = d.id;
   return 'pending';
 end $$;
 
 create function public.get_my_invites()
 returns table (invite_id uuid, status text, starts_at timestamptz, place text, double_date boolean,
                other_first_name text, clues jsonb, credit text)
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select i.id, i.status, d.starts_at, d.place, d.double_date, o.first_name,
     coalesce((select jsonb_agg(jsonb_build_object('prompt', pr.text_sv, 'answer', a.answer))
       from (select * from profile_answers where profile_id = o.id order by position limit 2) a
@@ -399,13 +427,16 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 create function public.respond_invite(p_invite uuid, p_accept boolean) returns text
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare i date_invites%rowtype; d date_proposals%rowtype; accepted int;
 begin
+  select proposal_id into i.proposal_id from date_invites where id = p_invite and single_id = auth.uid();
+  if not found then raise exception 'no open invite'; end if;
+  select * into d from date_proposals where id = i.proposal_id and status = 'sent' for update;
+  if not found then raise exception 'proposal closed'; end if;
   select * into i from date_invites where id = p_invite and single_id = auth.uid() and status = 'sent';
   if not found then raise exception 'no open invite'; end if;
-  select * into d from date_proposals where id = i.proposal_id and status = 'sent';
-  if not found then raise exception 'proposal closed'; end if;
+  if d.starts_at <= now() then raise exception 'date is in the past'; end if;
   update date_invites set status = case when p_accept then 'accepted' else 'declined' end, responded_at = now() where id = i.id;
   if not p_accept then
     update date_proposals set status = 'declined' where id = d.id;
@@ -421,7 +452,7 @@ begin
 end $$;
 
 create function public.delete_account() returns void
-language plpgsql security definer set search_path = public, auth as $$
+language plpgsql security definer set search_path = public, auth, pg_temp as $$
 begin
   delete from auth.users where id = auth.uid();
 end $$;
