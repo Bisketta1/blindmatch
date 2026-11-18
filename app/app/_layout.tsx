@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SessionProvider, useSession } from '../src/lib/session';
 import { BadgeProvider } from '../src/lib/badges';
 import { MatchOverlay } from '../src/components/MatchOverlay';
+import { ViewAsBanner } from '../src/components/ViewAsBanner';
 import { colors } from '../src/theme';
 
 function Gate() {
@@ -22,7 +23,12 @@ function Gate() {
   }, [loading, session, profile, segments, router]);
 
   if (loading) return <View style={{ flex: 1, backgroundColor: colors.bg, justifyContent: 'center' }}><ActivityIndicator color={colors.primary} /></View>;
-  return <Slot />;
+  return (
+    <View style={{ flex: 1 }}>
+      <ViewAsBanner />
+      <View key={session?.user.id ?? 'anon'} style={{ flex: 1 }}><Slot /></View>
+    </View>
+  );
 }
 
 export default function RootLayout() {

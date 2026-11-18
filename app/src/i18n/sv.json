@@ -77,7 +77,8 @@
     "matched": "Det blev en match! Gå till Chattar för att planera dejten.",
     "claimed": "Någon annan hann före på den här.",
     "matchedTitle": "Match",
-    "unlimited": "Obegränsat med swipes"
+    "unlimited": "Obegränsat med swipes",
+    "seeProfile": "Se {{name}}s profil"
   },
   "chats": {
     "title": "Matchmaker-chattar",
@@ -153,7 +154,9 @@
     "reportReason": "Vad är problemet?",
     "sent": "Förfrågan skickad",
     "invalid": "Ogiltig kod",
-    "reported": "Tack, vi tittar på det"
+    "reported": "Tack, vi tittar på det",
+    "viewProfile": "Se profil",
+    "notFound": "Profilen hittades inte"
   },
   "profile": {
     "title": "Din profil",
@@ -206,5 +209,13 @@
     "welcomeTitle": "Premium aktiverat",
     "welcome": "Du har nu obegränsat med swipes.",
     "empty": "Skriv en kod"
+  },
+  "viewAs": {
+    "banner": "Du visar appen som {{name}}",
+    "back": "Tillbaka till mig",
+    "title": "Testkonton",
+    "hint": "Byt till ett testkonto för att se hur appen ser ut för dem. Bara du kan göra det.",
+    "switching": "Byter…",
+    "failed": "Kunde inte byta konto"
   }
 }

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { notify } from '../../src/lib/notify';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
 import { useSession } from '../../src/lib/session';
@@ -25,19 +25,22 @@ export default function SwipeScreen() {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState('');
   const [ready, setReady] = useState(false);
+  const [friendsLoaded, setFriendsLoaded] = useState(false);
   const [dragging, setDragging] = useState(false);
   const card = useRef<SwipeCardHandle>(null);
   const { showMatch } = useBadges();
+  const router = useRouter();
 
   const loadFriends = useCallback(async () => {
     const uid = session!.user.id;
     const { data: fs } = await supabase.from('friendships').select('requester,addressee').eq('status', 'accepted');
     const ids = (fs ?? []).map((f: any) => (f.requester === uid ? f.addressee : f.requester));
-    if (!ids.length) { setFriends([]); setSingle(null); return; }
+    if (!ids.length) { setFriends([]); setSingle(null); setFriendsLoaded(true); return; }
     const { data: ps } = await supabase.from('profiles').select('id,first_name').in('id', ids);
     const list = (ps as Friend[]) ?? [];
     setFriends(list);
     setSingle((cur) => list.find((f) => f.id === cur?.id) ?? list[0] ?? null);
+    setFriendsLoaded(true);
   }, [session]);
 
   const loadDeck = useCallback(async (s: Friend | null) => {
@@ -70,6 +73,7 @@ export default function SwipeScreen() {
     if (data.matched && data.match_id) showMatch(data.match_id, t('match.body', { a: single.first_name, b: cand.first_name }));
   }
 
+  if (!friendsLoaded) return <View style={{ flex: 1, backgroundColor: colors.bg }} />;
   if (!friends.length) return <View style={{ flex: 1, backgroundColor: colors.bg, padding: 24, paddingTop: 80 }}><H1>{t('tabs.swipe')}</H1><Muted>{t('swipe.noFriends')}</Muted></View>;
   const top = deck[0];
 
@@ -79,6 +83,7 @@ export default function SwipeScreen() {
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginVertical: 8 }}>
         {friends.map((f) => <Chip key={f.id} label={f.first_name} active={single?.id === f.id} onPress={() => setSingle(f)} />)}
       </View>
+      {single && <Btn kind="ghost" icon="person" label={t('swipe.seeProfile', { name: single.first_name })} onPress={() => router.push(`/friend/${single.id}`)} style={{ alignSelf: 'flex-start', marginBottom: 4, paddingHorizontal: 4 }} />}
       <Muted style={{ marginBottom: 12 }}>{premium ? t('swipe.unlimited') : t('swipe.left', { n: left })}</Muted>
       {note ? <Text style={{ color: colors.muted, marginBottom: 12 }}>{note}</Text> : null}
       {top && (premium || left > 0) ? (

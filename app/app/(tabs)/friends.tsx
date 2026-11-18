@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { ScrollView, Share, Text, View } from 'react-native';
 import { notify } from '../../src/lib/notify';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '../../src/lib/supabase';
 import { useSession } from '../../src/lib/session';
@@ -14,6 +14,7 @@ type Friend = { id: string; first_name: string };
 
 export default function Friends() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { session, profile } = useSession();
   const [code, setCode] = useState('');
   const [reqs, setReqs] = useState<Req[]>([]);
@@ -84,6 +85,7 @@ export default function Friends() {
       {friends.map((f) => (
         <Card key={f.id}>
           <Text style={{ fontSize: 18, fontWeight: '700', color: colors.text }}>{f.first_name}</Text>
+          <View style={{ marginTop: 10 }}><Btn kind="soft" icon="person" label={t('friends.viewProfile')} onPress={() => router.push(`/friend/${f.id}`)} /></View>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
             <Btn kind="ghost" label={t('friends.report')} onPress={() => setReportFor(f)} style={{ flex: 1 }} />
             <Btn kind="ghost" label={t('friends.block')} onPress={() => block(f)} style={{ flex: 1 }} />

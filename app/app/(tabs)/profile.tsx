@@ -12,13 +12,18 @@ import { colors } from '../../src/theme';
 export default function ProfileScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { profile, refreshProfile } = useSession();
+  const { profile, refreshProfile, switchTo } = useSession();
+  const [demos, setDemos] = useState<{ id: string; first_name: string }[]>([]);
+  const [switching, setSwitching] = useState<string | null>(null);
   const [stats, setStats] = useState({ matches_made: 0, dates_made: 0 });
   const [code, setCode] = useState('');
   const [codeErr, setCodeErr] = useState('');
   const [codeShake, setCodeShake] = useState(0);
   const [redeeming, setRedeeming] = useState(false);
-  useFocusEffect(useCallback(() => { supabase.rpc('get_my_stats').then(({ data }) => data && setStats(data)); }, []));
+  useFocusEffect(useCallback(() => {
+    supabase.rpc('get_my_stats').then(({ data }) => data && setStats(data));
+    supabase.rpc('get_demo_accounts').then(({ data }) => setDemos((data as any[]) ?? []));
+  }, []));
 
   async function toggle(field: 'matchable' | 'open_to_double') {
     await supabase.from('profiles').update({ [field]: !profile![field] }).eq('id', profile!.id);
@@ -69,6 +74,22 @@ export default function ProfileScreen() {
           </View>
         )}
       </Card>
+      {demos.length > 0 && (
+        <Card>
+          <Text style={{ fontWeight: '800', color: colors.text, marginBottom: 6 }}>{t('viewAs.title')}</Text>
+          <Muted style={{ marginBottom: 12 }}>{t('viewAs.hint')}</Muted>
+          <View style={{ gap: 10 }}>
+            {demos.map((d) => (
+              <Btn key={d.id} kind="soft" icon="person" label={switching === d.id ? t('viewAs.switching') : d.first_name} loading={switching === d.id}
+                onPress={async () => {
+                  setSwitching(d.id);
+                  try { await switchTo(d.id, d.first_name); } catch (e: any) { notify(t('viewAs.failed'), e.message); }
+                  setSwitching(null);
+                }} />
+            ))}
+          </View>
+        </Card>
+      )}
       <Card>
         <Text style={{ fontWeight: '800', color: colors.text }}>{t('profile.stats')}</Text>
         <Muted>{t('profile.matchesMade')}: {stats.matches_made}</Muted>
