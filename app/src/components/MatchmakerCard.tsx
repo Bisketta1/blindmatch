@@ -15,8 +15,8 @@ type Thank = { body: string; from_first_name: string; place: string };
 function Stat({ value, label }: { value: number; label: string }) {
   return (
     <View style={{ flex: 1, minWidth: 0 }}>
-      <Display style={{ fontSize: 30, lineHeight: 36 }}>{value}</Display>
-      <Text style={{ color: colors.muted, fontSize: 12, fontWeight: '600' }}>{label}</Text>
+      <Display style={{ fontSize: 30, lineHeight: 36, color: '#FFFFFF' }}>{value}</Display>
+      <Text style={{ color: '#D9CFC6', fontSize: 12, fontWeight: '600' }}>{label}</Text>
     </View>
   );
 }

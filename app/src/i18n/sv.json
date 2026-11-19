@@ -129,7 +129,10 @@
     "ideas": "Idéer",
     "ideasFit": "Passar dem",
     "errAddress": "Skriv en riktig adress eller klistra in en länk från Google Maps.",
-    "errOpen": "Det finns redan ett dejtförslag. Ändra eller ångra det först."
+    "errOpen": "Det finns redan ett dejtförslag. Ändra eller ångra det först.",
+    "addAddress": "Lägg till adress",
+    "editAddress": "Ändra adress och beskrivning",
+    "saveDetails": "Spara"
   },
   "dates": {
     "title": "Dina blinddejter",

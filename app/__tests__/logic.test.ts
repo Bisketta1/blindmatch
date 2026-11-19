@@ -52,7 +52,7 @@ describe('wheel date helpers', () => {
   });
 });
 
-import { addressLabel, isMapsLink, mapsUrl } from '../src/lib/maps';
+import { addressLabel, isMapsLink, isValidAddress, mapsUrl } from '../src/lib/maps';
 import { formatCountdown } from '../src/lib/countdown';
 import { suggestIdeas } from '../src/lib/ideas';
 import { matchmakerTitle } from '../src/lib/matchmaker';
@@ -101,5 +101,16 @@ describe('date ideas and matchmaker title', () => {
     expect(matchmakerTitle(0).title).toBe('Ny matchmaker');
     expect(matchmakerTitle(2).title).toBe('Kopplare');
     expect(matchmakerTitle(12).next).toBeNull();
+  });
+});
+
+describe('address validation', () => {
+  it('accepts real addresses and map links only', () => {
+    expect(isValidAddress('Drottninggatan 1, Stockholm')).toBe(true);
+    expect(isValidAddress('https://maps.app.goo.gl/abc')).toBe(true);
+    expect(isValidAddress('abc')).toBe(false);
+    expect(isValidAddress('   ')).toBe(false);
+    expect(isValidAddress('https://evil.example.com/x')).toBe(false);
+    expect(isValidAddress('javascript:alert(1)')).toBe(false);
   });
 });

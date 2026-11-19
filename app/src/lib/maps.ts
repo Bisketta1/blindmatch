@@ -23,3 +23,11 @@ export function mapsUrl(address: string): string {
 export function addressLabel(address: string, linkLabel: string): string {
   return isMapsLink(address) ? linkLabel : address.trim();
 }
+
+/** A usable address: a known map link, or plain text of at least 5 characters that is not some other link. */
+export function isValidAddress(text: string): boolean {
+  const t = text.trim();
+  if (isMapsLink(t)) return true;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(t)) return false; // other links and schemes
+  return t.length >= 5;
+}

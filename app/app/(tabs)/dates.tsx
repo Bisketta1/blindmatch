@@ -47,6 +47,7 @@ export default function Dates() {
       {rows.length === 0 && <Muted>{t('dates.empty')}</Muted>}
       {rows.map((r) => {
         const past = isPast(r.starts_at, now);
+        const feedbackTime = isPast(new Date(new Date(r.starts_at).getTime() + 2 * 3600000), now);
         const confirmed = r.proposal_status === 'confirmed';
         const tone = confirmed ? 'good' : r.status === 'declined' ? 'bad' : 'wait';
         const label = confirmed ? t('dateCard.confirmed') : r.status === 'accepted' ? t('dates.accepted') : r.status === 'declined' ? t('dates.declined') : t('dates.invite');
@@ -62,7 +63,7 @@ export default function Dates() {
                   <Btn kind="soft" label={t('dates.decline')} onPress={() => respond(r.invite_id, false)} style={{ flex: 1 }} />
                 </View>
               )}
-              {confirmed && !past && r.chat_open && <Btn icon="chat" label={t('dates.openChat')} onPress={() => router.push(`/date-chat/${r.proposal_id}`)} />}
+              {confirmed && r.chat_open && <Btn icon="chat" label={t('dates.openChat')} onPress={() => router.push(`/date-chat/${r.proposal_id}`)} />}
               {confirmed && !past && !r.chat_open && <Muted>{t('dates.chatLater')}</Muted>}
               {confirmed && <Btn kind="ghost" icon="share" label={t('dateCard.share')} onPress={() => share(r)} />}
             </DateCard>
@@ -72,7 +73,7 @@ export default function Dates() {
                 {r.clues.map((c) => <Muted key={c.prompt}>{c.prompt} <Text style={{ color: colors.text, fontWeight: '600' }}>{c.answer}</Text></Muted>)}
               </View>
             )}
-            {confirmed && past && <FeedbackCard proposalId={r.proposal_id} otherName={r.other_first_name} matchmakers={r.credit} />}
+            {confirmed && feedbackTime && <FeedbackCard proposalId={r.proposal_id} otherName={r.other_first_name} matchmakers={r.credit} />}
           </View>
         );
       })}

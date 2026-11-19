@@ -10,7 +10,7 @@ import { notify } from '../../src/lib/notify';
 import { hapticError } from '../../src/lib/haptics';
 import { DateCard } from '../../src/components/DateCard';
 import { formatCountdown } from '../../src/lib/countdown';
-import { isMapsLink } from '../../src/lib/maps';
+import { isValidAddress } from '../../src/lib/maps';
 import { suggestIdeas } from '../../src/lib/ideas';
 import { useNow } from '../../src/lib/useNow';
 import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
@@ -55,6 +55,11 @@ export default function ChatScreen() {
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [addrErr, setAddrErr] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [editAddr, setEditAddr] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editErr, setEditErr] = useState(false);
+  const [editShake, setEditShake] = useState(0);
   const now = useNow();
   const tomorrow = new Date(Date.now() + 86400000);
   const [day, setDay] = useState(toDateString(tomorrow));
@@ -113,8 +118,7 @@ export default function ChatScreen() {
     const fail = (msg: string, p: boolean, d: boolean, a = false) => { setFormError(msg); setPlaceErr(p); setDateErr(d); setAddrErr(a); setFormShake((n) => n + 1); hapticError(); };
     if (!place.trim()) return fail(t('chats.errPlace'), true, false);
     const addr = address.trim();
-    if (addr.length < 5 && !isMapsLink(addr)) return fail(t('chats.errAddress'), false, false, true);
-    if (addr.startsWith('http') && !isMapsLink(addr)) return fail(t('chats.errAddress'), false, false, true);
+    if (!isValidAddress(addr)) return fail(t('chats.errAddress'), false, false, true);
     const [y, mo, d] = day.split('-').map(Number);
     const [h, mi] = time.split(':').map(Number);
     const when = new Date(y, mo - 1, d, h, mi);
@@ -133,6 +137,13 @@ export default function ChatScreen() {
     const dt = new Date(p.starts_at);
     setPlace(p.place); setAddress(p.address ?? ''); setDescription(p.description ?? ''); setDay(toDateString(dt)); setTime(toTimeString(dt)); setDbl(p.double_date);
     setShowForm(true); loadProposals(); refresh(true);
+  }
+
+  async function saveDetails(pid: string) {
+    if (!isValidAddress(editAddr)) { setEditErr(true); setEditShake((n) => n + 1); hapticError(); return; }
+    const { error } = await supabase.rpc('set_date_details', { p_proposal: pid, p_address: editAddr.trim(), p_description: editDesc.trim() || null });
+    if (error) { setEditErr(true); setEditShake((n) => n + 1); hapticError(); return; }
+    setEditing(null); setEditErr(false); loadProposals();
   }
 
   async function approve(pid: string) {
@@ -228,6 +239,20 @@ export default function ChatScreen() {
             {p.status === 'pending' && !p.i_approved && <Btn label={t('chats.approve')} onPress={() => approve(p.id)} />}
             {p.status === 'pending' && p.i_approved && <Muted>{t('chats.waitingOther')}</Muted>}
             {(p.status === 'pending' || p.status === 'sent') && <Btn kind="ghost" label={t('chats.change')} onPress={() => change(p)} />}
+            {['pending', 'sent', 'confirmed'].includes(p.status) && editing !== p.id && (
+              <Btn kind={p.address ? 'ghost' : 'soft'} icon="pin" label={p.address ? t('chats.editAddress') : t('chats.addAddress')}
+                onPress={() => { setEditing(p.id); setEditAddr(p.address ?? ''); setEditDesc(p.description ?? ''); setEditErr(false); }} />
+            )}
+            {editing === p.id && (
+              <View>
+                <Field label={t('chats.address')} value={editAddr} onChangeText={(x) => { setEditAddr(x); setEditErr(false); }} error={editErr} errorText={t('chats.errAddress')} shake={editShake} placeholder={t('chats.addressHint')} autoCapitalize="words" />
+                <Field label={t('chats.description')} value={editDesc} onChangeText={setEditDesc} multiline maxLength={400} style={{ minHeight: 72, textAlignVertical: 'top' }} />
+                <View style={{ gap: 8 }}>
+                  <Btn label={t('chats.saveDetails')} onPress={() => saveDetails(p.id)} />
+                  <Btn kind="ghost" label={t('common.cancel')} onPress={() => setEditing(null)} />
+                </View>
+              </View>
+            )}
           </DateCard>
         ))}
         {!openProposal && !showForm && <Btn kind="soft" icon="calendar" label={t('chats.proposeDate')} onPress={() => setShowForm(true)} />}
