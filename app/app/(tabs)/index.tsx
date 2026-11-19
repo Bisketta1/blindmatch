@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { notify } from '../../src/lib/notify';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,19 @@ import { Btn, Chip, H1, Muted } from '../../src/components/ui';
 import { SwipeCard, SwipeCardHandle, Candidate } from '../../src/features/swipe/SwipeCard';
 import type { SwipeDirection } from '../../src/features/swipe/decision';
 import { useBadges } from '../../src/lib/badges';
-import { colors } from '../../src/theme';
+import { Icon } from '../../src/components/Icon';
+import { colors, shadow } from '../../src/theme';
 
 type Friend = { id: string; first_name: string };
+
+function RoundButton({ icon, label, onPress, primary }: { icon: 'close' | 'heart'; label: string; onPress: () => void; primary?: boolean }) {
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress}
+      style={({ pressed }) => ({ width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center', backgroundColor: primary ? colors.primary : colors.card, borderWidth: primary ? 0 : 1, borderColor: colors.line, transform: [{ scale: pressed ? 0.93 : 1 }], ...(primary ? shadow.button : shadow.card) })}>
+      <Icon name={icon} size={30} color={primary ? '#fff' : colors.primary} strokeWidth={2.6} filled={icon === 'heart' && !!primary} />
+    </Pressable>
+  );
+}
 const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' });
 
 export default function SwipeScreen() {
@@ -88,10 +98,14 @@ export default function SwipeScreen() {
       {note ? <Text style={{ color: colors.muted, marginBottom: 12 }}>{note}</Text> : null}
       {top && (premium || left > 0) ? (
         <>
-          <SwipeCard key={top.candidate_id} ref={card} candidate={top} onSwipe={onSwipe} onDrag={setDragging} disabled={busy} yesLabel={t('swipe.yes')} noLabel={t('swipe.no')} />
-          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 16, marginTop: 20 }}>
-            <Btn kind="soft" icon="close" label={t('swipe.no')} onPress={() => card.current?.swipe('no')} style={{ flex: 1 }} />
-            <Btn icon="heart" label={t('swipe.yes')} onPress={() => card.current?.swipe('yes')} style={{ flex: 1 }} />
+          <View style={{ marginBottom: 36 }}>
+            <View style={{ position: 'absolute', left: 16, right: 16, top: 16, bottom: -16, backgroundColor: colors.card, borderRadius: 28, borderWidth: 1, borderColor: colors.line, opacity: 0.75, transform: [{ scale: 0.97 }] }} />
+            <View style={{ position: 'absolute', left: 30, right: 30, top: 30, bottom: -30, backgroundColor: colors.card, borderRadius: 28, borderWidth: 1, borderColor: colors.line, opacity: 0.45, transform: [{ scale: 0.94 }] }} />
+            <SwipeCard key={top.candidate_id} ref={card} candidate={top} onSwipe={onSwipe} onDrag={setDragging} disabled={busy} yesLabel={t('swipe.yes')} noLabel={t('swipe.no')} />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 28, marginTop: 8 }}>
+            <RoundButton icon="close" label={t('swipe.no')} onPress={() => card.current?.swipe('no')} />
+            <RoundButton icon="heart" label={t('swipe.yes')} primary onPress={() => card.current?.swipe('yes')} />
           </View>
         </>
       ) : (

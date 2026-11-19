@@ -8,6 +8,7 @@ import { Btn, Card, Chip, Field, H1, Muted } from '../../src/components/ui';
 import { hapticError, hapticSuccess } from '../../src/lib/haptics';
 import { notify } from '../../src/lib/notify';
 import { SwitchProfileSheet } from '../../src/components/SwitchProfileSheet';
+import { MatchmakerCard } from '../../src/components/MatchmakerCard';
 import { BUILD } from '../../src/config';
 import { colors } from '../../src/theme';
 
@@ -81,11 +82,7 @@ export default function ProfileScreen() {
           </View>
         )}
       </Card>
-      <Card>
-        <Text style={{ fontWeight: '800', color: colors.text }}>{t('profile.stats')}</Text>
-        <Muted>{t('profile.matchesMade')}: {stats.matches_made}</Muted>
-        <Muted>{t('profile.datesMade')}: {stats.dates_made}</Muted>
-      </Card>
+      <MatchmakerCard />
       <View style={{ gap: 12, marginTop: 4 }}>
         {(demos.length > 0 || profile.premium) && <Btn label={t('viewAs.button')} icon="people" onPress={() => setSheet(true)} />}
         <Btn kind={demos.length > 0 || profile.premium ? 'soft' : 'primary'} label={t('profile.edit')} icon="person" onPress={() => router.push('/edit-profile')} />

@@ -121,7 +121,15 @@
       "block": "Blockera {{name}}",
       "blocked": "Blockerad"
     },
-    "change": "Ändra förslaget"
+    "change": "Ändra förslaget",
+    "address": "Adress",
+    "addressHint": "Gatuadress eller en länk från Google Maps",
+    "description": "Vad ska ni göra? (valfritt)",
+    "placeName": "Platsens namn",
+    "ideas": "Idéer",
+    "ideasFit": "Passar dem",
+    "errAddress": "Skriv en riktig adress eller klistra in en länk från Google Maps.",
+    "errOpen": "Det finns redan ett dejtförslag. Ändra eller ångra det först."
   },
   "dates": {
     "title": "Dina blinddejter",
@@ -240,5 +248,52 @@
       "Var är du?",
       "Jag ser dig!"
     ]
+  },
+  "dateCard": {
+    "openMap": "Öppna i Google Maps",
+    "mapLink": "Plats via kartlänk",
+    "confirmed": "Bekräftad",
+    "pending": "Väntar på godkännande",
+    "sent": "Skickad",
+    "declined": "Avböjd",
+    "cancelled": "Avbruten",
+    "share": "Dela med en vän",
+    "shareText": "Jag ska på blinddejt: {{place}}, {{when}}. Adress: {{address}}. Jag dejtar {{name}}.",
+    "shareTitle": "Min blinddejt",
+    "weekdays": [
+      "söndag",
+      "måndag",
+      "tisdag",
+      "onsdag",
+      "torsdag",
+      "fredag",
+      "lördag"
+    ],
+    "at": "kl"
+  },
+  "feedback": {
+    "title": "Hur kändes dejten?",
+    "again": "Jag vill ses igen",
+    "notForMe": "Inte för mig",
+    "note": "Något du vill berätta? (privat)",
+    "thanksLabel": "Tacka {{name}}",
+    "thanksHint": "Ett litet tack till den som fixade dejten (valfritt)",
+    "send": "Skicka",
+    "done": "Tack för att du berättade.",
+    "doneAgain": "Du vill ses igen. Om {{name}} känner likadant får du veta.",
+    "doneNo": "Tack. Det stannar mellan dig och appen.",
+    "mutual": "Ni vill båda ses igen. Hör av er till varandra.",
+    "private": "Det du svarar är privat. {{name}} ser bara om ni båda vill ses igen."
+  },
+  "card": {
+    "title": "Matchmaker-kort",
+    "dates": "Dejter som blev av",
+    "held": "Genomförda",
+    "liked": "Ville ses igen",
+    "thanks": "Tack",
+    "matches": "Matcher",
+    "next": "{{n}} till för nästa titel",
+    "thanksTitle": "Tack du fått",
+    "none": "Inga tack än."
   }
 }

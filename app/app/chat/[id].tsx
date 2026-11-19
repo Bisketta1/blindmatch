@@ -8,6 +8,11 @@ import { useBadges } from '../../src/lib/badges';
 import { ageFromBirthDate } from '../../src/lib/age';
 import { notify } from '../../src/lib/notify';
 import { hapticError } from '../../src/lib/haptics';
+import { DateCard } from '../../src/components/DateCard';
+import { formatCountdown } from '../../src/lib/countdown';
+import { isMapsLink } from '../../src/lib/maps';
+import { suggestIdeas } from '../../src/lib/ideas';
+import { useNow } from '../../src/lib/useNow';
 import { Btn, Card, Chip, Field, Muted } from '../../src/components/ui';
 import { DateField, toDateString, toTimeString } from '../../src/components/DateField';
 import { Icon, IconName } from '../../src/components/Icon';
@@ -16,7 +21,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius } from '../../src/theme';
 
 type Msg = { id: string; sender_id: string; body: string; created_at: string };
-type Proposal = { id: string; starts_at: string; place: string; double_date: boolean; status: string; i_approved: boolean };
+type Proposal = { id: string; starts_at: string; place: string; address: string | null; description: string | null; double_date: boolean; status: string; i_approved: boolean };
 type Prof = { id: string; first_name: string; birth_date: string; city: string | null; bio: string | null; photos: string[]; friend_code?: string };
 
 function MenuItem({ icon, label, onPress, danger }: { icon: IconName; label: string; onPress: () => void; danger?: boolean }) {
@@ -47,6 +52,10 @@ export default function ChatScreen() {
   const [confirmRelease, setConfirmRelease] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [place, setPlace] = useState('');
+  const [address, setAddress] = useState('');
+  const [description, setDescription] = useState('');
+  const [addrErr, setAddrErr] = useState(false);
+  const now = useNow();
   const tomorrow = new Date(Date.now() + 86400000);
   const [day, setDay] = useState(toDateString(tomorrow));
   const [time, setTime] = useState('18:00');
@@ -59,7 +68,7 @@ export default function ChatScreen() {
   const scroll = useRef<any>(null);
 
   const loadProposals = useCallback(async () => {
-    const { data } = await supabase.rpc('get_match_proposals', { p_match: id });
+    const { data } = await supabase.rpc('get_match_proposals_v2', { p_match: id });
     setProps((data as Proposal[]) ?? []);
   }, [id]);
 
@@ -100,18 +109,21 @@ export default function ChatScreen() {
   }
 
   async function propose() {
-    setFormError(''); setPlaceErr(false); setDateErr(false);
-    const fail = (msg: string, p: boolean, d: boolean) => { setFormError(msg); setPlaceErr(p); setDateErr(d); setFormShake((n) => n + 1); hapticError(); };
+    setFormError(''); setPlaceErr(false); setDateErr(false); setAddrErr(false);
+    const fail = (msg: string, p: boolean, d: boolean, a = false) => { setFormError(msg); setPlaceErr(p); setDateErr(d); setAddrErr(a); setFormShake((n) => n + 1); hapticError(); };
     if (!place.trim()) return fail(t('chats.errPlace'), true, false);
+    const addr = address.trim();
+    if (addr.length < 5 && !isMapsLink(addr)) return fail(t('chats.errAddress'), false, false, true);
+    if (addr.startsWith('http') && !isMapsLink(addr)) return fail(t('chats.errAddress'), false, false, true);
     const [y, mo, d] = day.split('-').map(Number);
     const [h, mi] = time.split(':').map(Number);
     const when = new Date(y, mo - 1, d, h, mi);
     if (Number.isNaN(when.getTime()) || when.getTime() <= Date.now()) return fail(t('chats.errPast'), false, true);
     setSending(true);
-    const { error } = await supabase.rpc('propose_date', { p_match: id, p_starts: when.toISOString(), p_place: place.trim(), p_double: dbl });
+    const { error } = await supabase.rpc('propose_date_v2', { p_match: id, p_starts: when.toISOString(), p_place: place.trim(), p_address: addr, p_description: description.trim() || null, p_double: dbl });
     setSending(false);
-    if (error) return fail(error.message.includes('double') ? t('chats.errDouble') : error.message, false, false);
-    setShowForm(false); setPlace(''); setDbl(false);
+    if (error) return fail(error.message.includes('double') ? t('chats.errDouble') : (error.message.includes('proposals_one_open') || error.message.includes('not allowed')) ? t('chats.errOpen') : error.message.includes('future') ? t('chats.errPast') : error.message.includes('address') ? t('chats.errAddress') : t('common.error'), false, false);
+    setShowForm(false); setPlace(''); setAddress(''); setDescription(''); setDbl(false);
     await supabase.from('messages').insert({ match_id: id, sender_id: uid, body: `Jag föreslog en dejt: ${place.trim()}, ${day} kl ${time}.` });
     loadProposals();
   }
@@ -119,7 +131,7 @@ export default function ChatScreen() {
   async function change(p: Proposal) {
     await supabase.rpc('cancel_date_proposal', { p_proposal: p.id });
     const dt = new Date(p.starts_at);
-    setPlace(p.place); setDay(toDateString(dt)); setTime(toTimeString(dt)); setDbl(p.double_date);
+    setPlace(p.place); setAddress(p.address ?? ''); setDescription(p.description ?? ''); setDay(toDateString(dt)); setTime(toTimeString(dt)); setDbl(p.double_date);
     setShowForm(true); loadProposals(); refresh(true);
   }
 
@@ -209,20 +221,27 @@ export default function ChatScreen() {
             <Text style={{ color: m.sender_id === uid ? '#fff' : colors.text }}>{m.body}</Text>
           </View>
         ))}
-        {props.map((p) => (
-          <Card key={p.id} style={{ backgroundColor: colors.primarySoft }}>
-            <Text style={{ fontWeight: '800', color: colors.text }}>{p.place}</Text>
-            <Muted>{new Date(p.starts_at).toLocaleString('sv-SE', { dateStyle: 'medium', timeStyle: 'short' })}{p.double_date ? ' · dubbeldejt' : ''}</Muted>
-            <Text style={{ marginVertical: 4, color: colors.text }}>{t(`chats.status.${p.status}`)}</Text>
+        {props.filter((p) => p.status !== 'cancelled').map((p) => (
+          <DateCard key={p.id} place={p.place} address={p.address} description={p.description} startsAt={p.starts_at}
+            countdown={p.status === 'confirmed' || p.status === 'sent' ? formatCountdown(p.starts_at, now) : undefined}
+            status={{ label: t(`chats.status.${p.status}`), tone: p.status === 'confirmed' ? 'good' : p.status === 'declined' ? 'bad' : 'wait' }}>
             {p.status === 'pending' && !p.i_approved && <Btn label={t('chats.approve')} onPress={() => approve(p.id)} />}
             {p.status === 'pending' && p.i_approved && <Muted>{t('chats.waitingOther')}</Muted>}
-            {(p.status === 'pending' || p.status === 'sent') && <Btn kind="ghost" label={t('chats.change')} onPress={() => change(p)} style={{ marginTop: 6 }} />}
-          </Card>
+            {(p.status === 'pending' || p.status === 'sent') && <Btn kind="ghost" label={t('chats.change')} onPress={() => change(p)} />}
+          </DateCard>
         ))}
         {!openProposal && !showForm && <Btn kind="soft" icon="calendar" label={t('chats.proposeDate')} onPress={() => setShowForm(true)} />}
         {showForm && (
           <Card>
-            <Field label={t('chats.place')} value={place} onChangeText={(x) => { setPlace(x); setPlaceErr(false); }} error={placeErr} shake={formShake} />
+            <Field label={t('chats.placeName')} value={place} onChangeText={(x) => { setPlace(x); setPlaceErr(false); }} error={placeErr} shake={formShake} />
+            <Field label={t('chats.address')} value={address} onChangeText={(x) => { setAddress(x); setAddrErr(false); }} error={addrErr} shake={formShake} autoCapitalize="words" placeholder={t('chats.addressHint')} />
+            <Muted style={{ fontWeight: '700', marginBottom: 8 }}>{t('chats.ideas')}</Muted>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -4, marginBottom: 12 }} contentContainerStyle={{ paddingHorizontal: 4 }}>
+              {suggestIdeas(Object.values(profs).map((p) => `${p.bio ?? ''} ${p.answers.map((a) => a.answer).join(' ')}`).join(' ')).map(({ idea, match }) => (
+                <Chip key={idea.key} label={match ? `${idea.title} · ${t('chats.ideasFit')}` : idea.title} active={description === idea.description} onPress={() => setDescription(idea.description)} />
+              ))}
+            </ScrollView>
+            <Field label={t('chats.description')} value={description} onChangeText={setDescription} multiline maxLength={400} style={{ minHeight: 84, textAlignVertical: 'top' }} />
             <DateField label={t('chats.date')} mode="date" value={day} onChange={setDay} minimumDate={new Date()} doneLabel={t('common.done')} initial={tomorrow} error={dateErr} shake={formShake} />
             <DateField label={t('chats.time')} mode="time" value={time} onChange={setTime} doneLabel={t('common.done')} error={dateErr} shake={formShake} />
             <Chip label={t('chats.doubleDate')} active={dbl} onPress={() => setDbl(!dbl)} />

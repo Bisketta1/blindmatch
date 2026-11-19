@@ -6,11 +6,15 @@ import { supabase } from '../../src/lib/supabase';
 import { useSession } from '../../src/lib/session';
 import { hapticLight } from '../../src/lib/haptics';
 import { Btn, Field, Muted } from '../../src/components/ui';
+import { Display } from '../../src/components/Display';
+import { Icon } from '../../src/components/Icon';
+import { addressLabel, mapsUrl } from '../../src/lib/maps';
+import { Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius } from '../../src/theme';
 
 type Msg = { id: string; sender_id: string; body: string; created_at: string };
-type DateRow = { proposal_id: string; other_first_name: string; place: string; starts_at: string; chat_open: boolean };
+type DateRow = { proposal_id: string; other_first_name: string; place: string; address: string | null; starts_at: string; chat_open: boolean };
 
 /** Chat between the two blind-date singles on the day of the date. They only know each other's first name. */
 export default function DateChat() {
@@ -28,7 +32,7 @@ export default function DateChat() {
 
   const load = useCallback(async () => {
     const [{ data: ds }, { data: ms }] = await Promise.all([
-      supabase.rpc('get_my_dates'),
+      supabase.rpc('get_my_dates_v2'),
       supabase.from('date_messages').select('id,sender_id,body,created_at').eq('proposal_id', id).order('created_at'),
     ]);
     setInfo(((ds as DateRow[]) ?? []).find((d) => d.proposal_id === id) ?? null);
@@ -60,8 +64,14 @@ export default function DateChat() {
       <View style={{ paddingTop: 8, paddingHorizontal: 8, paddingBottom: 10, backgroundColor: colors.bg, borderBottomWidth: 1, borderBottomColor: colors.line }}>
         <Btn kind="ghost" icon="back" label={t('common.back')} onPress={() => router.back()} style={{ alignSelf: 'flex-start' }} />
         <View style={{ paddingHorizontal: 12 }}>
-          <Text style={{ fontSize: 22, fontWeight: '800', color: colors.text }}>{t('dateChat.title')}</Text>
+          <Display style={{ fontSize: 26, lineHeight: 32 }}>{t('dateChat.title')}</Display>
           {info && <Muted>{t('dateChat.with', { name })} · {info.place} · {new Date(info.starts_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}</Muted>}
+          {info?.address ? (
+            <Pressable onPress={() => Linking.openURL(mapsUrl(info.address!))} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8, minHeight: 44 }}>
+              <Icon name="pin" size={18} color={colors.primary} />
+              <Text style={{ color: colors.primary, fontWeight: '700', flex: 1 }} numberOfLines={1}>{addressLabel(info.address, t('dateCard.mapLink'))} · {t('dateCard.openMap')}</Text>
+            </Pressable>
+          ) : null}
         </View>
       </View>
       <ScrollView ref={scroll} contentContainerStyle={{ padding: 18, paddingBottom: 24 }} keyboardShouldPersistTaps="handled"

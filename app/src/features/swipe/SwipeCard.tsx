@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
 import { decideSwipe, SwipeDirection } from './decision';
-import { hapticLight } from '../../lib/haptics';
+import { hapticLight, hapticMedium } from '../../lib/haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Display } from '../../components/Display';
 import { colors, radius, shadow } from '../../theme';
@@ -25,6 +25,7 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
   latest.current = props;
   const pos = useRef(new Animated.ValueXY()).current;
   const done = useRef(false);
+  const crossed = useRef(false);
 
   const fling = (dir: SwipeDirection, dy = 0, vx = 0) => {
     if (done.current) return;
@@ -44,8 +45,14 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
       onMoveShouldSetPanResponder: (_, g) => !latest.current.disabled && !done.current && Math.abs(g.dx) > 5 && Math.abs(g.dx) > Math.abs(g.dy),
       onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: () => { pos.stopAnimation(); latest.current.onDrag?.(true); },
-      onPanResponderMove: (_, g) => { pos.setValue({ x: g.dx, y: g.dy * 0.35 }); },
+      onPanResponderMove: (_, g) => {
+        pos.setValue({ x: g.dx, y: g.dy * 0.35 });
+        const over = Math.abs(g.dx) > W * 0.3;
+        if (over && !crossed.current) { crossed.current = true; hapticMedium(); }
+        else if (!over && crossed.current) crossed.current = false;
+      },
       onPanResponderRelease: (_, g) => {
+        crossed.current = false;
         latest.current.onDrag?.(false);
         const dir = decideSwipe(g.dx, g.vx, W);
         if (dir) fling(dir, g.dy, g.vx);
@@ -66,6 +73,8 @@ export const SwipeCard = forwardRef<SwipeCardHandle, Props>(function SwipeCard(p
     <Animated.View {...responder.panHandlers} style={[styles.card, { transform: [{ translateX: pos.x }, { translateY: pos.y }, { rotate }] }]}>
       <View style={styles.photoWrap}>
         {candidate.photos[0] ? <Image source={{ uri: candidate.photos[0] }} style={styles.photo} resizeMode="cover" /> : <View style={styles.photo} />}
+        <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(47,125,91,0.42)', opacity: yesOpacity }]} />
+        <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(168,67,47,0.42)', opacity: noOpacity }]} />
         <LinearGradient colors={['transparent', 'rgba(30,18,12,0.78)']} style={styles.shade} pointerEvents="none" />
         <View style={styles.nameBlock} pointerEvents="none">
           <Display style={styles.name}>{candidate.first_name}<Text style={styles.age}>  {candidate.age}</Text></Display>

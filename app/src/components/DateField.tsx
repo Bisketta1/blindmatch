@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Modal, Platform, Pressable, Text, View } from 'react-native';
 import { Btn, Shake } from './ui';
+import { Display } from './Display';
 import { Wheel } from './Wheel';
 import { MONTHS_SV, clampInt, daysInMonth, pickDate } from '../lib/dates';
+
+const MONTHS_FULL = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
 import { colors, radius } from '../theme';
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -82,8 +85,12 @@ export function DateField({ label, mode, value, onChange, placeholder, minimumDa
       </Pressable>
       <Modal transparent animationType="slide" visible={open} onRequestClose={() => setOpen(false)}>
         <Pressable style={{ flex: 1, backgroundColor: '#0006' }} onPress={() => setOpen(false)} />
-        <View style={{ backgroundColor: colors.card, padding: 16, paddingBottom: 34, borderTopLeftRadius: 24, borderTopRightRadius: 24 }}>
-          <Text style={{ textAlign: 'center', fontWeight: '800', fontSize: 16, color: colors.text, marginBottom: 8 }}>{label}</Text>
+        <View style={{ backgroundColor: colors.card, padding: 20, paddingBottom: 36, borderTopLeftRadius: 32, borderTopRightRadius: 32 }}>
+          <View style={{ alignSelf: 'center', width: 40, height: 5, borderRadius: 3, backgroundColor: colors.line, marginBottom: 16 }} />
+          <Text style={{ textAlign: 'center', color: colors.muted, fontSize: 13, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase' }}>{label}</Text>
+          <Display style={{ textAlign: 'center', fontSize: 28, lineHeight: 34, marginTop: 4, marginBottom: 12 }}>
+            {mode === 'date' ? `${clampInt(d, 1, daysInMonth(y, m))} ${MONTHS_FULL[m]} ${y}` : `${pad(hh)}:${pad(mm)}`}
+          </Display>
           {mode === 'date' ? (
             <View style={{ flexDirection: 'row' }}>
               <Wheel flex={1} items={days} index={clampInt(d - 1, 0, days.length - 1)} onIndex={(i) => setD(i + 1)} />
@@ -96,7 +103,7 @@ export function DateField({ label, mode, value, onChange, placeholder, minimumDa
               <Wheel items={minutes} index={Math.round(mm / MIN_STEP)} onIndex={(i) => setMm(i * MIN_STEP)} />
             </View>
           )}
-          <Btn label={doneLabel} onPress={done} style={{ marginTop: 12 }} />
+          <Btn label={doneLabel} onPress={done} style={{ marginTop: 16 }} />
         </View>
       </Modal>
     </Shake>

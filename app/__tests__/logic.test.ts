@@ -51,3 +51,55 @@ describe('wheel date helpers', () => {
     expect(pickDate(2026, 10, 1, min).getDate()).toBe(18);
   });
 });
+
+import { addressLabel, isMapsLink, mapsUrl } from '../src/lib/maps';
+import { formatCountdown } from '../src/lib/countdown';
+import { suggestIdeas } from '../src/lib/ideas';
+import { matchmakerTitle } from '../src/lib/matchmaker';
+
+describe('maps links', () => {
+  it('builds a search link from a plain address', () => {
+    expect(mapsUrl('Drottninggatan 1, Stockholm')).toBe('https://www.google.com/maps/search/?api=1&query=Drottninggatan%201%2C%20Stockholm');
+  });
+  it('accepts real map links only', () => {
+    expect(isMapsLink('https://maps.app.goo.gl/abc123')).toBe(true);
+    expect(isMapsLink('https://www.google.com/maps/place/Bollhuset')).toBe(true);
+    expect(isMapsLink('https://www.google.com/search?q=x')).toBe(false);
+    expect(isMapsLink('https://evil.example.com/maps')).toBe(false);
+    expect(isMapsLink('http://maps.app.goo.gl/abc')).toBe(false);
+    expect(isMapsLink('javascript:alert(1)')).toBe(false);
+  });
+  it('never turns an unknown link into a clickable maps url', () => {
+    expect(mapsUrl('https://evil.example.com/x')).toContain('https://www.google.com/maps/search/?api=1&query=');
+  });
+  it('shortens pasted links in the label', () => {
+    expect(addressLabel('https://maps.app.goo.gl/abc', 'Plats via kartlänk')).toBe('Plats via kartlänk');
+    expect(addressLabel(' Storgatan 5 ', 'x')).toBe('Storgatan 5');
+  });
+});
+
+describe('countdown', () => {
+  const now = new Date('2026-11-19T12:00:00Z');
+  it('speaks Swedish and rounds down', () => {
+    expect(formatCountdown('2026-11-21T16:30:00Z', now)).toBe('Om 2 dygn och 4 timmar');
+    expect(formatCountdown('2026-11-20T12:00:00Z', now)).toBe('Om 1 dygn');
+    expect(formatCountdown('2026-11-19T15:20:00Z', now)).toBe('Om 3 timmar och 20 minuter');
+    expect(formatCountdown('2026-11-19T12:25:00Z', now)).toBe('Om 25 minuter');
+    expect(formatCountdown('2026-11-19T11:30:00Z', now)).toBe('Nu');
+    expect(formatCountdown('2026-11-10T11:30:00Z', now)).toBe('Dejten har varit');
+  });
+});
+
+describe('date ideas and matchmaker title', () => {
+  it('puts matching ideas first', () => {
+    const s = suggestIdeas('Jag älskar sushi och bokhandlar');
+    expect(s[0].match).toBe(true);
+    expect(['sushi', 'bok']).toContain(s[0].idea.key);
+    expect(s.length).toBeGreaterThan(5);
+  });
+  it('gives a calm title ladder', () => {
+    expect(matchmakerTitle(0).title).toBe('Ny matchmaker');
+    expect(matchmakerTitle(2).title).toBe('Kopplare');
+    expect(matchmakerTitle(12).next).toBeNull();
+  });
+});
