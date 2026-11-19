@@ -9,6 +9,8 @@ import { ageFromBirthDate } from '../../src/lib/age';
 import { notify } from '../../src/lib/notify';
 import { hapticError } from '../../src/lib/haptics';
 import { DateCard } from '../../src/components/DateCard';
+import { ChatBubble } from '../../src/components/ChatBubble';
+import { ChatInput } from '../../src/components/ChatInput';
 import { formatCountdown } from '../../src/lib/countdown';
 import { isValidAddress } from '../../src/lib/maps';
 import { suggestIdeas } from '../../src/lib/ideas';
@@ -227,10 +229,7 @@ export default function ChatScreen() {
           </Card>
         )}
         {msgs.map((m) => (
-          <View key={m.id} style={{ alignSelf: m.sender_id === uid ? 'flex-end' : 'flex-start', maxWidth: '82%', marginBottom: 8,
-            backgroundColor: m.sender_id === uid ? colors.primary : colors.card, borderRadius: radius.card, padding: 12, borderWidth: m.sender_id === uid ? 0 : 1, borderColor: colors.line }}>
-            <Text style={{ color: m.sender_id === uid ? '#fff' : colors.text }}>{m.body}</Text>
-          </View>
+          <ChatBubble key={m.id} mine={m.sender_id === uid} text={m.body} time={new Date(m.created_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} />
         ))}
         {props.filter((p) => p.status !== 'cancelled').map((p) => (
           <DateCard key={p.id} place={p.place} address={p.address} description={p.description} startsAt={p.starts_at}
@@ -278,10 +277,7 @@ export default function ChatScreen() {
           </Card>
         )}
       </ScrollView>
-      <View style={{ flexDirection: 'row', padding: 12, paddingBottom: Math.max(12, insets.bottom), gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
-        <View style={{ flex: 1 }}><Field value={text} onChangeText={setText} placeholder={t('chats.typeMessage')} onSubmitEditing={send} /></View>
-        <Btn label={t('chats.send')} onPress={send} disabled={!text.trim()} style={{ height: 48 }} />
-      </View>
+      <ChatInput value={text} onChange={setText} onSend={send} placeholder={t('chats.typeMessage')} bottomInset={insets.bottom} />
     </KeyboardAvoidingView>
   );
 }

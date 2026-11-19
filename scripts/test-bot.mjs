@@ -1,5 +1,6 @@
-// Dev-only test bot. Plays Ella (matchmaker), and accepts date invites as Jonathan and Miriam (the singles).
-// Usage: BOT_PASSWORD=... node scripts/test-bot.mjs
+// Dev-only test bot. Plays Ella (matchmaker). Date invites are accepted for Jonathan and Miriam ONLY if AUTO_ACCEPT=1,
+// so by default you accept them yourself via Byt profil.
+// Usage: BOT_PASSWORD=... [AUTO_ACCEPT=1] node scripts/test-bot.mjs
 import { createClient } from '../app/node_modules/@supabase/supabase-js/dist/index.mjs';
 
 const URL = 'https://pdxdbcftaphdonrlpbwy.supabase.co';
@@ -65,7 +66,8 @@ async function tick() {
     }
   }
   first = false;
-  // Singles accept invites
+  // Singles accept invites (only when AUTO_ACCEPT=1)
+  if (process.env.AUTO_ACCEPT !== '1') return;
   for (const s of [{ name: 'Jonathan', c: jonathan }, { name: 'Miriam', c: miriam }]) {
     const { data: inv } = await s.c.sb.rpc('get_my_invites');
     for (const i of inv ?? []) {

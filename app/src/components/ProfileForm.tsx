@@ -20,6 +20,7 @@ export type ProfileValues = {
 type Prompt = { id: number; text_sv: string };
 const GENDERS = ['man', 'kvinna', 'icke-binar'];
 const MAX_SLOTS = 3;
+export const CITIES = ['Stockholm', 'Göteborg', 'Malmö', 'Uppsala', 'Lund', 'Linköping', 'Örebro', 'Västerås', 'Umeå', 'Jönköping'];
 const OLD_PROMPTS = 8; // prompts 1-8 are the retired old wording; they are not offered any more
 
 export const EMPTY_PROFILE: ProfileValues = {
@@ -85,7 +86,10 @@ export function ProfileForm({ initial, mode, submitLabel, busy, onSubmit }: {
             {errBirth && <Text style={{ color: colors.danger, fontSize: 12, marginTop: -10, marginBottom: 14, marginLeft: 4 }}>{v.birth ? t('onboarding.tooYoung') : t('errors.birth')}</Text>}
           </>
         ) : <Muted style={{ marginBottom: 16 }}>{t('onboarding.birthDate')}: {v.birth}</Muted>}
-        <Field label={t('onboarding.city')} value={v.city} onChangeText={(x) => set('city', x)} />
+        <Muted style={{ fontWeight: '700', marginBottom: 8 }}>{t('onboarding.city')}</Muted>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {(v.city && !CITIES.includes(v.city) ? [v.city, ...CITIES] : CITIES).map((c) => <Chip key={c} label={c} active={v.city === c} onPress={() => set('city', c)} />)}
+        </View>
       </Section>
 
       <Section title={t('onboarding.genderTitle')}>

@@ -7,6 +7,10 @@ import { useSession } from '../../src/lib/session';
 import { hapticLight } from '../../src/lib/haptics';
 import { Btn, Field, Muted } from '../../src/components/ui';
 import { Display } from '../../src/components/Display';
+import { ChatBubble } from '../../src/components/ChatBubble';
+import { ChatInput } from '../../src/components/ChatInput';
+import { QuickReplies } from '../../src/components/QuickReplies';
+import { ReplyFlight, ReplyFlightHandle } from '../../src/components/ReplyFlight';
 import { Icon } from '../../src/components/Icon';
 import { addressLabel, mapsUrl } from '../../src/lib/maps';
 import { Linking } from 'react-native';
@@ -29,6 +33,8 @@ export default function DateChat() {
   const [text, setText] = useState('');
   const [error, setError] = useState('');
   const scroll = useRef<any>(null);
+  const flight = useRef<ReplyFlightHandle>(null);
+  const listArea = useRef<any>(null);
 
   const load = useCallback(async () => {
     const [{ data: ds }, { data: ms }] = await Promise.all([
@@ -74,31 +80,20 @@ export default function DateChat() {
           ) : null}
         </View>
       </View>
-      <ScrollView ref={scroll} contentContainerStyle={{ padding: 18, paddingBottom: 24 }} keyboardShouldPersistTaps="handled"
+      <View ref={listArea} collapsable={false} style={{ flex: 1 }}>
+      <ScrollView ref={scroll} contentContainerStyle={{ padding: 18, paddingBottom: 24, flexGrow: 1, justifyContent: 'flex-end' }} keyboardShouldPersistTaps="handled"
         onContentSizeChange={() => scroll.current?.scrollToEnd({ animated: true })}>
         <Muted style={{ marginBottom: 14, textAlign: 'center' }}>{t('dateChat.hint')}</Muted>
         {msgs.length === 0 && <Muted style={{ textAlign: 'center', marginTop: 24 }}>{t('dateChat.empty')}</Muted>}
         {msgs.map((m) => (
-          <View key={m.id} style={{ alignSelf: m.sender_id === uid ? 'flex-end' : 'flex-start', maxWidth: '82%', marginBottom: 8,
-            backgroundColor: m.sender_id === uid ? colors.primary : colors.card, borderRadius: radius.card, padding: 12, borderWidth: m.sender_id === uid ? 0 : 1, borderColor: colors.line }}>
-            <Text style={{ color: m.sender_id === uid ? '#fff' : colors.text }}>{m.body}</Text>
-          </View>
+          <ChatBubble key={m.id} mine={m.sender_id === uid} text={m.body} time={new Date(m.created_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} />
         ))}
       </ScrollView>
-      {error ? <Text style={{ color: colors.danger, textAlign: 'center', paddingBottom: 6 }}>{error}</Text> : null}
-      {open && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexGrow: 0 }} contentContainerStyle={{ paddingHorizontal: 12, gap: 8, paddingVertical: 8 }}>
-          {(t('dateChat.quick', { returnObjects: true }) as unknown as string[]).map((q) => (
-            <Pressable key={q} onPress={() => send(q)} style={{ backgroundColor: colors.primarySoft, borderRadius: 999, paddingHorizontal: 14, paddingVertical: 8 }}>
-              <Text style={{ color: colors.primary, fontWeight: '700' }}>{q}</Text>
-            </Pressable>
-          ))}
-        </ScrollView>
-      )}
-      <View style={{ flexDirection: 'row', padding: 12, paddingBottom: Math.max(12, insets.bottom), gap: 8, backgroundColor: colors.card, borderTopWidth: 1, borderTopColor: colors.line }}>
-        <View style={{ flex: 1 }}><Field value={text} onChangeText={setText} placeholder={t('dateChat.placeholder', { name })} onSubmitEditing={() => send(text)} editable={open} /></View>
-        <Btn label={t('chats.send')} onPress={() => send(text)} disabled={!text.trim() || !open} style={{ height: 48 }} />
       </View>
+      {error ? <Text style={{ color: colors.danger, textAlign: 'center', paddingBottom: 6 }}>{error}</Text> : null}
+      {open && <QuickReplies replies={t('dateChat.quick', { returnObjects: true }) as unknown as string[]} flight={flight} landing={listArea} onSend={send} />}
+      <ChatInput value={text} onChange={setText} onSend={() => send(text)} placeholder={t('dateChat.placeholder', { name })} editable={open} bottomInset={insets.bottom} />
+      <ReplyFlight ref={flight} />
     </KeyboardAvoidingView>
   );
 }
