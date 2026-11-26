@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
-import { notify } from '../src/lib/notify';
+import { notify } from '@/shared/lib/notify';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../src/lib/supabase';
-import { useSession } from '../src/lib/session';
-import { EMPTY_PROFILE, ProfileForm, ProfileValues } from '../src/components/ProfileForm';
-import { H1 } from '../src/components/ui';
-import { colors } from '../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { EMPTY_PROFILE, ProfileForm, ProfileValues } from '@/components/ProfileForm';
+import { H1 } from '@/components/ui';
+import { colors } from '@/shared/theme';
 
 export default function Onboarding() {
   const { t } = useTranslation();

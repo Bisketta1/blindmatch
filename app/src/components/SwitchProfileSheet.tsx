@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../lib/supabase';
-import { useSession } from '../lib/session';
-import { notify } from '../lib/notify';
-import { hapticLight } from '../lib/haptics';
-import { Btn, Muted } from './ui';
-import { colors } from '../theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { notify } from '@/shared/lib/notify';
+import { hapticLight } from '@/shared/lib/haptics';
+import { Btn, Muted } from '@/components/ui';
+import { colors } from '@/shared/theme';
 
 /** "Byt profil": pick one of the demo accounts (premium owners only). */
 export function SwitchProfileSheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {

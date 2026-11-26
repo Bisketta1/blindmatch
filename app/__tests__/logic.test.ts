@@ -1,6 +1,6 @@
-import { ageFromBirthDate, isAdult, isValidBirthDate } from '../src/lib/age';
-import { decideSwipe } from '../src/features/swipe/decision';
-import sv from '../src/i18n/sv.json';
+import { ageFromBirthDate, isAdult, isValidBirthDate } from '@/shared/lib/age';
+import { decideSwipe } from '@/features/swipe/decision';
+import sv from '@/shared/i18n/sv.json';
 
 describe('age', () => {
   const now = new Date('2026-11-18T12:00:00Z');
@@ -35,7 +35,7 @@ describe('i18n', () => {
   });
 });
 
-import { clampInt, daysInMonth, pickDate } from '../src/lib/dates';
+import { clampInt, daysInMonth, pickDate } from '@/shared/lib/dates';
 describe('wheel date helpers', () => {
   it('knows month lengths', () => {
     expect(daysInMonth(2026, 1)).toBe(28);
@@ -52,10 +52,10 @@ describe('wheel date helpers', () => {
   });
 });
 
-import { addressLabel, isMapsLink, isValidAddress, mapsUrl } from '../src/lib/maps';
-import { formatCountdown } from '../src/lib/countdown';
-import { suggestIdeas } from '../src/lib/ideas';
-import { matchmakerTitle } from '../src/lib/matchmaker';
+import { addressLabel, isMapsLink, isValidAddress, mapsUrl } from '@/lib/maps';
+import { formatCountdown } from '@/lib/countdown';
+import { suggestIdeas } from '@/lib/ideas';
+import { matchmakerTitle } from '@/lib/matchmaker';
 
 describe('maps links', () => {
   it('builds a search link from a plain address', () => {

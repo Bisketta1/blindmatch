@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
-import { colors, radius, shadow } from '../theme';
-import { Display } from './Display';
-import { Icon, IconName } from './Icon';
+import { colors, radius, shadow } from '@/shared/theme';
+import { Display } from '@/components/Display';
+import { Icon, IconName } from '@/components/Icon';
 
 export function Btn(props: { label: string; icon?: IconName; onPress: () => void; kind?: 'primary' | 'soft' | 'danger' | 'ghost'; disabled?: boolean; loading?: boolean; style?: ViewStyle }) {
   const kind = props.kind ?? 'primary';

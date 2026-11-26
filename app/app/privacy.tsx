@@ -2,8 +2,8 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Btn, H1, Muted } from '../src/components/ui';
-import { colors } from '../src/theme';
+import { Btn, H1, Muted } from '@/components/ui';
+import { colors } from '@/shared/theme';
 
 export default function Privacy() {
   const { t } = useTranslation();

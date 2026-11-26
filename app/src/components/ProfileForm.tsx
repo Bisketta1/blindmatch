@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../lib/supabase';
-import { useSession } from '../lib/session';
-import { isAdult } from '../lib/age';
-import { pickAndUploadPhoto } from '../lib/photos';
-import { notify } from '../lib/notify';
-import { hapticError, hapticLight } from '../lib/haptics';
-import { Btn, Chip, Field, Muted, Section, Shake } from './ui';
-import { Icon } from './Icon';
-import { DateField } from './DateField';
-import { colors, radius } from '../theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { isAdult } from '@/shared/lib/age';
+import { pickAndUploadPhoto } from '@/shared/lib/photos';
+import { notify } from '@/shared/lib/notify';
+import { hapticError, hapticLight } from '@/shared/lib/haptics';
+import { Btn, Chip, Field, Muted, Section, Shake } from '@/components/ui';
+import { Icon } from '@/components/Icon';
+import { DateField } from '@/components/DateField';
+import { colors, radius } from '@/shared/theme';
 
 export type Slot = { promptId: number | null; answer: string };
 export type ProfileValues = {

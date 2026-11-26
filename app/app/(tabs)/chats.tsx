@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
-import { Card, H1, Muted } from '../../src/components/ui';
-import { useBadges } from '../../src/lib/badges';
-import { colors } from '../../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { Card, H1, Muted } from '@/components/ui';
+import { useBadges } from '@/lib/badges';
+import { colors } from '@/shared/theme';
 
 export type MatchRow = {
   match_id: string; status: string; expires_at: string; my_claim_id: string; my_single: string; my_single_name: string;

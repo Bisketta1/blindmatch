@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
+import { supabase } from '@/shared/api/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Display } from '../../src/components/Display';
-import { Btn, Field, Muted } from '../../src/components/ui';
-import { Logo } from '../../src/components/Icon';
-import { hapticError } from '../../src/lib/haptics';
-import { colors, shadow } from '../../src/theme';
+import { Display } from '@/components/Display';
+import { Btn, Field, Muted } from '@/components/ui';
+import { Logo } from '@/components/Icon';
+import { hapticError } from '@/shared/lib/haptics';
+import { colors, shadow } from '@/shared/theme';
 
 export default function SignIn() {
   const { t } = useTranslation();

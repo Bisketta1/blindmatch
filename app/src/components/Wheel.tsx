@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, NativeScrollEvent, NativeSyntheticEvent, Pressable, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { hapticTick } from '../lib/haptics';
-import { playTick } from '../lib/sound';
-import { colors } from '../theme';
+import { hapticTick } from '@/shared/lib/haptics';
+import { playTick } from '@/shared/lib/sound';
+import { colors } from '@/shared/theme';
 
 export const ITEM_H = 48;
 const ROWS = 5;

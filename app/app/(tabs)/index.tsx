@@ -1,16 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { notify } from '../../src/lib/notify';
+import { notify } from '@/shared/lib/notify';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
-import { useSession } from '../../src/lib/session';
-import { Btn, Chip, H1, Muted } from '../../src/components/ui';
-import { SwipeCard, SwipeCardHandle, Candidate } from '../../src/features/swipe/SwipeCard';
-import type { SwipeDirection } from '../../src/features/swipe/decision';
-import { useBadges } from '../../src/lib/badges';
-import { Icon } from '../../src/components/Icon';
-import { colors, shadow } from '../../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { Btn, Chip, H1, Muted } from '@/components/ui';
+import { SwipeCard, SwipeCardHandle, Candidate } from '@/features/swipe/SwipeCard';
+import type { SwipeDirection } from '@/features/swipe/decision';
+import { useBadges } from '@/lib/badges';
+import { Icon } from '@/components/Icon';
+import { colors, shadow } from '@/shared/theme';
 
 type Friend = { id: string; first_name: string };
 

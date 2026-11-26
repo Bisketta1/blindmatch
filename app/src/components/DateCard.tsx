@@ -1,11 +1,11 @@
 import React from 'react';
 import { Linking, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Display } from './Display';
-import { Icon } from './Icon';
-import { addressLabel, mapsUrl } from '../lib/maps';
-import { MONTHS_SV } from '../lib/dates';
-import { colors, shadow } from '../theme';
+import { Display } from '@/components/Display';
+import { Icon } from '@/components/Icon';
+import { addressLabel, mapsUrl } from '@/lib/maps';
+import { MONTHS_SV } from '@/shared/lib/dates';
+import { colors, shadow } from '@/shared/theme';
 
 export type DateTone = 'good' | 'wait' | 'bad';
 const TONES: Record<DateTone, { bg: string; fg: string }> = {

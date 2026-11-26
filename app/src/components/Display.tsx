@@ -1,6 +1,6 @@
 import React from 'react';
 import { Platform, Text, TextProps } from 'react-native';
-import { colors, fonts } from '../theme';
+import { colors, fonts } from '@/shared/theme';
 
 /** Serif display text for titles. One weight only (Android ignores fontWeight on custom fonts). */
 export function Display({ style, ...rest }: TextProps) {

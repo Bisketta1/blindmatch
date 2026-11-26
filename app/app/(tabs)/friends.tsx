@@ -1,13 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { ScrollView, Share, Text, View } from 'react-native';
-import { notify } from '../../src/lib/notify';
+import { notify } from '@/shared/lib/notify';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
-import { useSession } from '../../src/lib/session';
-import { Btn, Card, Field, H1, Muted } from '../../src/components/ui';
-import { hapticError } from '../../src/lib/haptics';
-import { colors } from '../../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { Btn, Card, Field, H1, Muted } from '@/components/ui';
+import { hapticError } from '@/shared/lib/haptics';
+import { colors } from '@/shared/theme';
 
 type Req = { id: string; requester: string; first_name: string };
 type Friend = { id: string; first_name: string };

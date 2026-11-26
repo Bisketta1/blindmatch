@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../theme';
+import { colors } from '@/shared/theme';
 
 /** Message bubble: mine = deep terracotta with a gentle gradient, theirs = white with a hairline. Soft shadow, one tighter corner. */
 export function ChatBubble({ mine, text, time }: { mine: boolean; text: string; time?: string }) {

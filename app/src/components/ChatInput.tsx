@@ -1,8 +1,8 @@
 import React from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Icon } from './Icon';
-import { colors, shadow } from '../theme';
+import { Icon } from '@/components/Icon';
+import { colors, shadow } from '@/shared/theme';
 
 /** Floating message bar with a round send button. */
 export function ChatInput({ value, onChange, onSend, placeholder, editable = true, bottomInset = 0 }:

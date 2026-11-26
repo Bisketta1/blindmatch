@@ -1,15 +1,15 @@
-import '@/i18n';
+import '@/shared/i18n';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Fraunces_600SemiBold, useFonts } from '@expo-google-fonts/fraunces';
-import { SessionProvider, useSession } from '../src/lib/session';
-import { BadgeProvider } from '../src/lib/badges';
-import { MatchOverlay } from '../src/components/MatchOverlay';
-import { ViewAsBanner } from '../src/components/ViewAsBanner';
-import { colors } from '../src/theme';
+import { SessionProvider, useSession } from '@/lib/session';
+import { BadgeProvider } from '@/lib/badges';
+import { MatchOverlay } from '@/components/MatchOverlay';
+import { ViewAsBanner } from '@/components/ViewAsBanner';
+import { colors } from '@/shared/theme';
 
 function Gate() {
   const { session, profile, loading, viewAs } = useSession();

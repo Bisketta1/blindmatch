@@ -2,12 +2,12 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Modal, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useBadges } from '../lib/badges';
-import { Btn } from './ui';
-import { Display } from './Display';
-import { Icon } from './Icon';
-import { hapticSuccess } from '../lib/haptics';
-import { colors } from '../theme';
+import { useBadges } from '@/lib/badges';
+import { Btn } from '@/components/ui';
+import { Display } from '@/components/Display';
+import { Icon } from '@/components/Icon';
+import { hapticSuccess } from '@/shared/lib/haptics';
+import { colors } from '@/shared/theme';
 
 const DOTS = Array.from({ length: 12 }, (_, i) => ({ angle: (i / 12) * Math.PI * 2, dist: 110 + (i % 3) * 25, size: 8 + (i % 3) * 3, color: i % 2 ? colors.primary : colors.accent }));
 

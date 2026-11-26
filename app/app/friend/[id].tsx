@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, Image, ScrollView, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
-import { ageFromBirthDate } from '../../src/lib/age';
-import { Btn, Card, Muted } from '../../src/components/ui';
-import { colors, radius } from '../../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { ageFromBirthDate } from '@/shared/lib/age';
+import { Btn, Card, Muted } from '@/components/ui';
+import { colors, radius } from '@/shared/theme';
 
 type Prof = { id: string; first_name: string; birth_date: string; city: string | null; bio: string | null; photos: string[] };
 const W = Dimensions.get('window').width - 36;

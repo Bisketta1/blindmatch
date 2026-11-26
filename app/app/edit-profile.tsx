@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { notify } from '../src/lib/notify';
+import { notify } from '@/shared/lib/notify';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../src/lib/supabase';
-import { useSession } from '../src/lib/session';
-import { ProfileForm, ProfileValues } from '../src/components/ProfileForm';
-import { Btn, H1 } from '../src/components/ui';
-import { colors } from '../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { ProfileForm, ProfileValues } from '@/components/ProfileForm';
+import { Btn, H1 } from '@/components/ui';
+import { colors } from '@/shared/theme';
 
 export default function EditProfile() {
   const { t } = useTranslation();

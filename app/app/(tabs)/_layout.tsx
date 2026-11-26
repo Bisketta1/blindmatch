@@ -2,9 +2,9 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Icon, IconName } from '../../src/components/Icon';
-import { useBadges } from '../../src/lib/badges';
-import { colors } from '../../src/theme';
+import { Icon, IconName } from '@/components/Icon';
+import { useBadges } from '@/lib/badges';
+import { colors } from '@/shared/theme';
 
 const icon = (name: IconName) => ({ color, focused }: { color: any; focused: boolean }) =>
   <Icon name={name} color={String(color)} size={24} filled={focused && name === 'heart'} strokeWidth={focused ? 2.4 : 2} />;

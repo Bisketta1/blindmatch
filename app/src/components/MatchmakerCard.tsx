@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../lib/supabase';
-import { matchmakerTitle } from '../lib/matchmaker';
-import { Display } from './Display';
-import { Icon } from './Icon';
-import { Muted } from './ui';
-import { colors, shadow } from '../theme';
+import { supabase } from '@/shared/api/supabase';
+import { matchmakerTitle } from '@/lib/matchmaker';
+import { Display } from '@/components/Display';
+import { Icon } from '@/components/Icon';
+import { Muted } from '@/components/ui';
+import { colors, shadow } from '@/shared/theme';
 
 type Card = { matches_made: number; dates_made: number; dates_held: number; liked: number; thanks: number };
 type Thank = { body: string; from_first_name: string; place: string };

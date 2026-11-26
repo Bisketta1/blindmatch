@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Pressable } from 'react-native';
-import type { ReplyFlightHandle } from './ReplyFlight';
+import type { ReplyFlightHandle } from '@/components/ReplyFlight';
 
 export const REPLY_STYLES = [
   { color: '#A8432F', tint: '#F7E9E1', fg: '#8F3826' },

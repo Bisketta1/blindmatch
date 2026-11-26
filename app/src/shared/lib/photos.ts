@@ -1,5 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
-import { supabase } from './supabase';
+import { supabase } from '@/shared/api/supabase';
 
 /** Pick an image and upload it to the user's own folder in the public `photos` bucket. Returns the public URL. */
 export async function pickAndUploadPhoto(userId: string): Promise<string | null> {

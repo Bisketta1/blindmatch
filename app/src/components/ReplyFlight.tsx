@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { hapticLight, hapticMedium } from '../lib/haptics';
+import { hapticLight, hapticMedium } from '@/shared/lib/haptics';
 
 export type FlightSpec = {
   text: string; color: string; tint: string; fg: string;

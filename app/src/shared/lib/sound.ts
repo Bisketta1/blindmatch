@@ -18,7 +18,7 @@ export function playTick() {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createAudioPlayer, setAudioModeAsync } = require('expo-audio');
     if (!player) {
-      player = createAudioPlayer(require('../../assets/tick.wav'));
+      player = createAudioPlayer(require('../../../assets/tick.wav'));
       setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
     }
     player.seekTo(0);

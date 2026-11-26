@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Session } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+import { supabase } from '@/shared/api/supabase';
 
 export type Profile = {
   id: string; first_name: string; birth_date: string; city: string | null; gender: string | null;

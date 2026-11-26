@@ -2,15 +2,15 @@ import React, { useCallback, useState } from 'react';
 import { Alert, Image, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
-import { useSession } from '../../src/lib/session';
-import { Btn, Card, Chip, Field, H1, Muted } from '../../src/components/ui';
-import { hapticError, hapticSuccess } from '../../src/lib/haptics';
-import { notify } from '../../src/lib/notify';
-import { SwitchProfileSheet } from '../../src/components/SwitchProfileSheet';
-import { MatchmakerCard } from '../../src/components/MatchmakerCard';
-import { BUILD } from '../../src/config';
-import { colors } from '../../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { useSession } from '@/lib/session';
+import { Btn, Card, Chip, Field, H1, Muted } from '@/components/ui';
+import { hapticError, hapticSuccess } from '@/shared/lib/haptics';
+import { notify } from '@/shared/lib/notify';
+import { SwitchProfileSheet } from '@/components/SwitchProfileSheet';
+import { MatchmakerCard } from '@/components/MatchmakerCard';
+import { BUILD } from '@/shared/config';
+import { colors } from '@/shared/theme';
 
 export default function ProfileScreen() {
   const { t } = useTranslation();

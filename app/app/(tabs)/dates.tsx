@@ -2,16 +2,16 @@ import React, { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, Share, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../../src/lib/supabase';
-import { notify } from '../../src/lib/notify';
-import { Btn, H1, Muted } from '../../src/components/ui';
-import { Display } from '../../src/components/Display';
-import { DateCard } from '../../src/components/DateCard';
-import { FeedbackCard } from '../../src/components/FeedbackCard';
-import { formatCountdown, isPast } from '../../src/lib/countdown';
-import { useNow } from '../../src/lib/useNow';
-import { addressLabel } from '../../src/lib/maps';
-import { colors } from '../../src/theme';
+import { supabase } from '@/shared/api/supabase';
+import { notify } from '@/shared/lib/notify';
+import { Btn, H1, Muted } from '@/components/ui';
+import { Display } from '@/components/Display';
+import { DateCard } from '@/components/DateCard';
+import { FeedbackCard } from '@/components/FeedbackCard';
+import { formatCountdown, isPast } from '@/lib/countdown';
+import { useNow } from '@/shared/lib/useNow';
+import { addressLabel } from '@/lib/maps';
+import { colors } from '@/shared/theme';
 
 type Invite = {
   invite_id: string; status: string; starts_at: string; place: string; address: string | null; description: string | null; double_date: boolean;

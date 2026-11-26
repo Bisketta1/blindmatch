@@ -1,10 +1,10 @@
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } from 'react-native';
-import { decideSwipe, SwipeDirection } from './decision';
-import { hapticLight, hapticMedium } from '../../lib/haptics';
+import { decideSwipe, SwipeDirection } from '@/features/swipe/decision';
+import { hapticLight, hapticMedium } from '@/shared/lib/haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Display } from '../../components/Display';
-import { colors, radius, shadow } from '../../theme';
+import { Display } from '@/components/Display';
+import { colors, radius, shadow } from '@/shared/theme';
 
 export type Candidate = {
   candidate_id: string; first_name: string; age: number; city: string | null; bio: string | null; photos: string[];

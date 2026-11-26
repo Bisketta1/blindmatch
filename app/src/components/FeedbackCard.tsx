@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { supabase } from '../lib/supabase';
-import { hapticError, hapticSuccess } from '../lib/haptics';
-import { Display } from './Display';
-import { Btn, Field, Muted } from './ui';
-import { colors, shadow } from '../theme';
+import { supabase } from '@/shared/api/supabase';
+import { hapticError, hapticSuccess } from '@/shared/lib/haptics';
+import { Display } from '@/components/Display';
+import { Btn, Field, Muted } from '@/components/ui';
+import { colors, shadow } from '@/shared/theme';
 
 type State = { mine: 'again' | 'not_for_me' | null; mutual: boolean };
 

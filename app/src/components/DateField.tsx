@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Modal, Platform, Pressable, Text, View } from 'react-native';
-import { Btn, Shake } from './ui';
-import { Display } from './Display';
-import { Wheel } from './Wheel';
-import { MONTHS_SV, clampInt, daysInMonth, pickDate } from '../lib/dates';
+import { Btn, Shake } from '@/components/ui';
+import { Display } from '@/components/Display';
+import { Wheel } from '@/components/Wheel';
+import { MONTHS_SV, clampInt, daysInMonth, pickDate } from '@/shared/lib/dates';
 
 const MONTHS_FULL = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];
-import { colors, radius } from '../theme';
+import { colors, radius } from '@/shared/theme';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 export const toDateString = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
