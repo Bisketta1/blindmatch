@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, Platform, Pressable, Text, View } from 'react-native';
-import { Btn, Shake } from '@/components/ui';
-import { Display } from '@/components/Display';
-import { Wheel } from '@/components/Wheel';
+import { Btn, Shake } from '@/shared/ui/ui';
+import { Display } from '@/shared/ui/Display';
+import { Wheel } from '@/shared/ui/Wheel';
 import { MONTHS_SV, clampInt, daysInMonth, pickDate } from '@/shared/lib/dates';
 
 const MONTHS_FULL = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december'];

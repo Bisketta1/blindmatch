@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { useSession } from '@/lib/session';
 import { ProfileForm, ProfileValues } from '@/components/ProfileForm';
-import { Btn, H1 } from '@/components/ui';
+import { Btn, H1 } from '@/shared/ui/ui';
 import { colors } from '@/shared/theme';
 
 export default function EditProfile() {

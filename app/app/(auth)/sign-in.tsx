@@ -3,9 +3,9 @@ import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-na
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Display } from '@/components/Display';
-import { Btn, Field, Muted } from '@/components/ui';
-import { Logo } from '@/components/Icon';
+import { Display } from '@/shared/ui/Display';
+import { Btn, Field, Muted } from '@/shared/ui/ui';
+import { Logo } from '@/shared/ui/Icon';
 import { hapticError } from '@/shared/lib/haptics';
 import { colors, shadow } from '@/shared/theme';
 

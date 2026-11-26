@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { ageFromBirthDate } from '@/shared/lib/age';
-import { Btn, Card, Muted } from '@/components/ui';
+import { Btn, Card, Muted } from '@/shared/ui/ui';
 import { colors, radius } from '@/shared/theme';
 
 type Prof = { id: string; first_name: string; birth_date: string; city: string | null; bio: string | null; photos: string[] };

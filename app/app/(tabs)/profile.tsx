@@ -4,7 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { useSession } from '@/lib/session';
-import { Btn, Card, Chip, Field, H1, Muted } from '@/components/ui';
+import { Btn, Card, Chip, Field, H1, Muted } from '@/shared/ui/ui';
 import { hapticError, hapticSuccess } from '@/shared/lib/haptics';
 import { notify } from '@/shared/lib/notify';
 import { SwitchProfileSheet } from '@/components/SwitchProfileSheet';

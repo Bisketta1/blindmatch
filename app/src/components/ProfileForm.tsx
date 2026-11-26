@@ -7,9 +7,9 @@ import { isAdult } from '@/shared/lib/age';
 import { pickAndUploadPhoto } from '@/shared/lib/photos';
 import { notify } from '@/shared/lib/notify';
 import { hapticError, hapticLight } from '@/shared/lib/haptics';
-import { Btn, Chip, Field, Muted, Section, Shake } from '@/components/ui';
-import { Icon } from '@/components/Icon';
-import { DateField } from '@/components/DateField';
+import { Btn, Chip, Field, Muted, Section, Shake } from '@/shared/ui/ui';
+import { Icon } from '@/shared/ui/Icon';
+import { DateField } from '@/shared/ui/DateField';
 import { colors, radius } from '@/shared/theme';
 
 export type Slot = { promptId: number | null; answer: string };

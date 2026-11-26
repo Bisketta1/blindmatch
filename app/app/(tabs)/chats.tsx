@@ -3,7 +3,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { Card, H1, Muted } from '@/components/ui';
+import { Card, H1, Muted } from '@/shared/ui/ui';
 import { useBadges } from '@/lib/badges';
 import { colors } from '@/shared/theme';
 

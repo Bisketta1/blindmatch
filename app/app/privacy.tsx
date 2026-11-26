@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Btn, H1, Muted } from '@/components/ui';
+import { Btn, H1, Muted } from '@/shared/ui/ui';
 import { colors } from '@/shared/theme';
 
 export default function Privacy() {

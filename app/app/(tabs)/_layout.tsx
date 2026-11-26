@@ -2,7 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Icon, IconName } from '@/components/Icon';
+import { Icon, IconName } from '@/shared/ui/Icon';
 import { useBadges } from '@/lib/badges';
 import { colors } from '@/shared/theme';
 

@@ -5,7 +5,7 @@ import { supabase } from '@/shared/api/supabase';
 import { useSession } from '@/lib/session';
 import { notify } from '@/shared/lib/notify';
 import { hapticLight } from '@/shared/lib/haptics';
-import { Btn, Muted } from '@/components/ui';
+import { Btn, Muted } from '@/shared/ui/ui';
 import { colors } from '@/shared/theme';
 
 /** "Byt profil": pick one of the demo accounts (premium owners only). */

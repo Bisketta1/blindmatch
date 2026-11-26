@@ -4,9 +4,9 @@ import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { matchmakerTitle } from '@/lib/matchmaker';
-import { Display } from '@/components/Display';
-import { Icon } from '@/components/Icon';
-import { Muted } from '@/components/ui';
+import { Display } from '@/shared/ui/Display';
+import { Icon } from '@/shared/ui/Icon';
+import { Muted } from '@/shared/ui/ui';
 import { colors, shadow } from '@/shared/theme';
 
 type Card = { matches_made: number; dates_made: number; dates_held: number; liked: number; thanks: number };

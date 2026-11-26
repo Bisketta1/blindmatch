@@ -3,7 +3,7 @@ import { Animated, Dimensions, Image, PanResponder, StyleSheet, Text, View } fro
 import { decideSwipe, SwipeDirection } from '@/features/swipe/decision';
 import { hapticLight, hapticMedium } from '@/shared/lib/haptics';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Display } from '@/components/Display';
+import { Display } from '@/shared/ui/Display';
 import { colors, radius, shadow } from '@/shared/theme';
 
 export type Candidate = {

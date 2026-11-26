@@ -3,9 +3,9 @@ import { Animated, Easing, Modal, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useBadges } from '@/lib/badges';
-import { Btn } from '@/components/ui';
-import { Display } from '@/components/Display';
-import { Icon } from '@/components/Icon';
+import { Btn } from '@/shared/ui/ui';
+import { Display } from '@/shared/ui/Display';
+import { Icon } from '@/shared/ui/Icon';
 import { hapticSuccess } from '@/shared/lib/haptics';
 import { colors } from '@/shared/theme';
 
