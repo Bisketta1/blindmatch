@@ -26,3 +26,4 @@ Wake-up: scheduled task trig_01AaaNL6mnMDRowLFDMG5R1L (name "blindmatch autopilo
 - 2026-11-27 00:40: architecture migration done through stage 4 (shared/ + features/ folders, @/ alias, tests colocated, CODEMAP.md). Gates green. Stage 5 (api.ts extraction) deferred behind the features. Next: reschedule.
 - 2026-11-27 00:00: council round 3 done and saved (docs/council/21-verdict-round3.md, names.md). Starting architecture migration.
 - 2026-11-26 23:30: autopilot set up.
+- 2026-11-26 safety feature done (migration 0016 applied without DELETE, SQL test passes, UI in Dejter and Friends tabs; old rows just stop showing, purge needs user approval). Next: HIG token pass.

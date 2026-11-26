@@ -321,5 +321,36 @@
     "done": "Tiden är ändrad.",
     "kept": "Tiden ligger kvar.",
     "expired": "Förslaget har gått ut. Tiden ligger kvar."
+  },
+  "safety": {
+    "title": "Dela dejten med en vän",
+    "hint": "Din vän ser ditt förnamn, tid och plats. Aldrig vem du ska träffa, bilder eller chatten.",
+    "share": "Välj vän",
+    "sheetTitle": "Vem litar du på?",
+    "sheetHint": "Välj en vän i appen. Hen ser bara ditt förnamn, tiden, platsen och om du har checkat in.",
+    "noFriends": "Du har inga vänner i appen än.",
+    "confirm": "Dela",
+    "failed": "Det gick inte att dela. Försök igen.",
+    "sharedWith": "Delat med {{name}}",
+    "noCheckin": "Ingen incheckning än.",
+    "windowLater": "Du kan checka in från en timme före dejten.",
+    "arrived": "Jag är framme",
+    "ok": "Allt bra",
+    "home": "Jag är hemma",
+    "left": "Jag behövde gå",
+    "stop": "Sluta dela",
+    "sent": "Din vän ser det nu.",
+    "checkinFail": "Det gick inte att checka in just nu.",
+    "status": {
+      "arrived": "Framme",
+      "ok": "Allt bra",
+      "home": "Hemma",
+      "left": "Behövde gå"
+    },
+    "notEmergency": "Det här är ingen larmtjänst. Vid fara, ring 112.",
+    "call112": "Ring 112",
+    "sharedList": "Delat med dig",
+    "friendDate": "{{name}} har en dejt",
+    "decline": "Avvisa"
   }
 }

@@ -8,6 +8,7 @@ import { useSession } from '@/features/auth/session';
 import { Btn, Card, Field, H1, Muted } from '@/shared/ui/ui';
 import { hapticError } from '@/shared/lib/haptics';
 import { colors } from '@/shared/theme';
+import { SharedWithMe } from '@/features/safety/SharedWithMe';
 
 type Req = { id: string; requester: string; first_name: string };
 type Friend = { id: string; first_name: string };
@@ -69,6 +70,7 @@ export default function Friends() {
       <Field label={t('friends.enterCode')} value={code} onChangeText={(x) => { setCode(x); setCodeErr(''); }} autoCapitalize="none" error={!!codeErr} errorText={codeErr} shake={codeShake} />
       <Btn label={t('friends.add')} onPress={add} />
 
+      <SharedWithMe />
       {reqs.length > 0 && <Text style={{ fontWeight: '800', marginTop: 24, marginBottom: 8, color: colors.text }}>{t('friends.requests')}</Text>}
       {reqs.map((r) => (
         <Card key={r.id}>
