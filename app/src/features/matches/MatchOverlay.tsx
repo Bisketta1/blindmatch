@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Animated, Easing, Modal, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { useBadges } from '@/lib/badges';
+import { useBadges } from '@/features/matches/badges';
 import { Btn } from '@/shared/ui/ui';
 import { Display } from '@/shared/ui/Display';
 import { Icon } from '@/shared/ui/Icon';

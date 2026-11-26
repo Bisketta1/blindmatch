@@ -4,7 +4,7 @@ import { notify } from '@/shared/lib/notify';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
+import { useSession } from '@/features/auth/session';
 import { Btn, Card, Field, H1, Muted } from '@/shared/ui/ui';
 import { hapticError } from '@/shared/lib/haptics';
 import { colors } from '@/shared/theme';

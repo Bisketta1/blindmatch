@@ -4,11 +4,11 @@ import { notify } from '@/shared/lib/notify';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
+import { useSession } from '@/features/auth/session';
 import { Btn, Chip, H1, Muted } from '@/shared/ui/ui';
 import { SwipeCard, SwipeCardHandle, Candidate } from '@/features/swipe/SwipeCard';
 import type { SwipeDirection } from '@/features/swipe/decision';
-import { useBadges } from '@/lib/badges';
+import { useBadges } from '@/features/matches/badges';
 import { Icon } from '@/shared/ui/Icon';
 import { colors, shadow } from '@/shared/theme';
 

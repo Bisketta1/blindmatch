@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
+import { useSession } from '@/features/auth/session';
 import { notify } from '@/shared/lib/notify';
 import { hapticLight } from '@/shared/lib/haptics';
 import { Btn, Muted } from '@/shared/ui/ui';

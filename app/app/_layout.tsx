@@ -5,10 +5,10 @@ import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Fraunces_600SemiBold, useFonts } from '@expo-google-fonts/fraunces';
-import { SessionProvider, useSession } from '@/lib/session';
-import { BadgeProvider } from '@/lib/badges';
-import { MatchOverlay } from '@/components/MatchOverlay';
-import { ViewAsBanner } from '@/components/ViewAsBanner';
+import { SessionProvider, useSession } from '@/features/auth/session';
+import { BadgeProvider } from '@/features/matches/badges';
+import { MatchOverlay } from '@/features/matches/MatchOverlay';
+import { ViewAsBanner } from '@/features/profile/ViewAsBanner';
 import { colors } from '@/shared/theme';
 
 function Gate() {

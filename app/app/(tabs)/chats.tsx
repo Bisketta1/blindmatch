@@ -4,7 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { Card, H1, Muted } from '@/shared/ui/ui';
-import { useBadges } from '@/lib/badges';
+import { useBadges } from '@/features/matches/badges';
 import { colors } from '@/shared/theme';
 
 export type MatchRow = {

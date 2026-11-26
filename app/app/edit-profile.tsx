@@ -4,8 +4,8 @@ import { notify } from '@/shared/lib/notify';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
-import { ProfileForm, ProfileValues } from '@/components/ProfileForm';
+import { useSession } from '@/features/auth/session';
+import { ProfileForm, ProfileValues } from '@/features/profile/ProfileForm';
 import { Btn, H1 } from '@/shared/ui/ui';
 import { colors } from '@/shared/theme';
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Image, Modal, Pressable, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
+import { useSession } from '@/features/auth/session';
 import { isAdult } from '@/shared/lib/age';
 import { pickAndUploadPhoto } from '@/shared/lib/photos';
 import { notify } from '@/shared/lib/notify';

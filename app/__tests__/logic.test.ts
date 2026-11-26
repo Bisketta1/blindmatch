@@ -52,10 +52,10 @@ describe('wheel date helpers', () => {
   });
 });
 
-import { addressLabel, isMapsLink, isValidAddress, mapsUrl } from '@/lib/maps';
-import { formatCountdown } from '@/lib/countdown';
-import { suggestIdeas } from '@/lib/ideas';
-import { matchmakerTitle } from '@/lib/matchmaker';
+import { addressLabel, isMapsLink, isValidAddress, mapsUrl } from '@/features/dates/maps';
+import { formatCountdown } from '@/features/dates/countdown';
+import { suggestIdeas } from '@/features/dates/ideas';
+import { matchmakerTitle } from '@/features/matchmaker/matchmaker';
 
 describe('maps links', () => {
   it('builds a search link from a plain address', () => {

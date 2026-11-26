@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
+import { useSession } from '@/features/auth/session';
 
 export type Badges = { chats: number; dates: number; friends: number; matches: number };
 export type MatchToast = { matchId: string; body: string } | null;

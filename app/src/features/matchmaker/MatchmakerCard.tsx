@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { matchmakerTitle } from '@/lib/matchmaker';
+import { matchmakerTitle } from '@/features/matchmaker/matchmaker';
 import { Display } from '@/shared/ui/Display';
 import { Icon } from '@/shared/ui/Icon';
 import { Muted } from '@/shared/ui/ui';

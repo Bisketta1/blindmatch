@@ -6,11 +6,11 @@ import { supabase } from '@/shared/api/supabase';
 import { notify } from '@/shared/lib/notify';
 import { Btn, H1, Muted } from '@/shared/ui/ui';
 import { Display } from '@/shared/ui/Display';
-import { DateCard } from '@/components/DateCard';
-import { FeedbackCard } from '@/components/FeedbackCard';
-import { formatCountdown, isPast } from '@/lib/countdown';
+import { DateCard } from '@/features/dates/DateCard';
+import { FeedbackCard } from '@/features/dates/FeedbackCard';
+import { formatCountdown, isPast } from '@/features/dates/countdown';
 import { useNow } from '@/shared/lib/useNow';
-import { addressLabel } from '@/lib/maps';
+import { addressLabel } from '@/features/dates/maps';
 import { colors } from '@/shared/theme';
 
 type Invite = {

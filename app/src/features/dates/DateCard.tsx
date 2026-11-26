@@ -3,7 +3,7 @@ import { Linking, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Display } from '@/shared/ui/Display';
 import { Icon } from '@/shared/ui/Icon';
-import { addressLabel, mapsUrl } from '@/lib/maps';
+import { addressLabel, mapsUrl } from '@/features/dates/maps';
 import { MONTHS_SV } from '@/shared/lib/dates';
 import { colors, shadow } from '@/shared/theme';
 

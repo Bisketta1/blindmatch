@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Icon, IconName } from '@/shared/ui/Icon';
-import { useBadges } from '@/lib/badges';
+import { useBadges } from '@/features/matches/badges';
 import { colors } from '@/shared/theme';
 
 const icon = (name: IconName) => ({ color, focused }: { color: any; focused: boolean }) =>

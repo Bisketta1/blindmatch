@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { useSession } from '@/lib/session';
+import { useSession } from '@/features/auth/session';
 import { Btn } from '@/shared/ui/ui';
 import { colors } from '@/shared/theme';
 

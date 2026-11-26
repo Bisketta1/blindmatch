@@ -3,8 +3,8 @@ import { ScrollView } from 'react-native';
 import { notify } from '@/shared/lib/notify';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { useSession } from '@/lib/session';
-import { EMPTY_PROFILE, ProfileForm, ProfileValues } from '@/components/ProfileForm';
+import { useSession } from '@/features/auth/session';
+import { EMPTY_PROFILE, ProfileForm, ProfileValues } from '@/features/profile/ProfileForm';
 import { H1 } from '@/shared/ui/ui';
 import { colors } from '@/shared/theme';
 
