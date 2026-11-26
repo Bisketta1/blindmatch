@@ -1,4 +1,4 @@
-import '../src/i18n';
+import '@/i18n';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
