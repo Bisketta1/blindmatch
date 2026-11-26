@@ -28,3 +28,4 @@ Wake-up: scheduled task trig_01AaaNL6mnMDRowLFDMG5R1L (name "blindmatch autopilo
 - 2026-11-26 23:30: autopilot set up.
 - 2026-11-26 safety feature done (migration 0016 applied without DELETE, SQL test passes, UI in Dejter and Friends tabs; old rows just stop showing, purge needs user approval). Next: HIG token pass.
 - 2026-11-26 night: user (asleep, cannot answer prompts) granted standing permission to answer YES to any approval prompt as long as it costs no money. Still never touch `prinskassim@gmail.com` destructively, never commit secrets, no paid services. Test-data cleanup (old demo rows, safety share purge) may now be done with care, listing what was removed in this log.
+- 2026-11-27 00:25: HIG pass step 1: type/spacing tokens in theme.ts, H1 34/41, Muted 15/21, tab Chattar renamed Matcher. Next: large-title screens, lists instead of cards for chats/friends, empty states, Reduce Motion, Mer section, status labels.

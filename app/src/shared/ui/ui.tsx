@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
-import { colors, radius, shadow } from '@/shared/theme';
+import { colors, radius, shadow, type } from '@/shared/theme';
 import { Display } from '@/shared/ui/Display';
 import { Icon, IconName } from '@/shared/ui/Icon';
 
@@ -60,7 +60,7 @@ export function H1({ children }: { children: React.ReactNode }) {
   return <Display style={styles.h1}>{children}</Display>;
 }
 export function Muted({ children, style }: { children: React.ReactNode; style?: object }) {
-  return <Text style={[{ color: colors.muted, fontSize: 14, lineHeight: 20 }, style]}>{children}</Text>;
+  return <Text style={[{ color: colors.muted, ...type.subhead }, style]}>{children}</Text>;
 }
 export function Card({ children, style }: { children: React.ReactNode; style?: ViewStyle }) {
   return <View style={[styles.card, style]}>{children}</View>;
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   label: { color: colors.muted, fontSize: 13, fontWeight: '600', marginBottom: 6, marginLeft: 4, letterSpacing: 0.2 },
   input: { backgroundColor: colors.card, borderRadius: radius.field, borderWidth: 1, borderColor: colors.line, paddingHorizontal: 16, paddingVertical: 14, fontSize: 17, color: colors.text, minHeight: 52 },
   chip: { paddingVertical: 10, paddingHorizontal: 16, minHeight: 44, justifyContent: 'center', borderRadius: radius.chip, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card, marginRight: 8, marginBottom: 8 },
-  h1: { fontSize: 32, lineHeight: 38, color: colors.text, marginBottom: 20 },
+  h1: { ...type.largeTitle, color: colors.text, marginBottom: 20 },
   card: { backgroundColor: colors.card, borderRadius: radius.card, padding: 20, marginBottom: 16, borderWidth: 1, borderColor: colors.line, ...shadow.card },
 });
 

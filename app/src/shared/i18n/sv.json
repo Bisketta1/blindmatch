@@ -61,7 +61,7 @@
   },
   "tabs": {
     "swipe": "Swipa",
-    "chats": "Chattar",
+    "chats": "Matcher",
     "dates": "Dejter",
     "friends": "Vänner",
     "profile": "Profil"
@@ -74,7 +74,7 @@
     "cap": "Du har swipat klart för idag åt {{name}}. Kom tillbaka imorgon!",
     "yes": "JA",
     "no": "NEJ",
-    "matched": "Det blev en match! Gå till Chattar för att planera dejten.",
+    "matched": "Det blev en match! Gå till Matcher för att planera dejten.",
     "claimed": "Någon annan hann före på den här.",
     "matchedTitle": "Match",
     "unlimited": "Obegränsat med swipes",

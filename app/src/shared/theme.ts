@@ -19,6 +19,18 @@ export const colors = {
 };
 export const radius = { card: 24, button: 999, field: 16, chip: 999 };
 export const space = (n: number) => n * 4;
+/** Spacing scale (pt) and screen gutter; use these instead of ad-hoc numbers. */
+export const spacing = { xs: 4, sm: 8, md: 12, lg: 16, xl: 24, xxl: 32, gutter: 20 };
+/** Type scale after Apple HIG: size / line height. Titles use the Fraunces Display component. */
+export const type = {
+  largeTitle: { fontSize: 34, lineHeight: 41 },
+  title: { fontSize: 22, lineHeight: 28 },
+  body: { fontSize: 17, lineHeight: 24 },
+  subhead: { fontSize: 15, lineHeight: 21 },
+  footnote: { fontSize: 13, lineHeight: 18 },
+  caption: { fontSize: 12, lineHeight: 16 },
+};
+export const minTarget = 44;
 export const shadow = {
   card: { shadowColor: '#3A2418', shadowOpacity: 0.08, shadowRadius: 24, shadowOffset: { width: 0, height: 10 }, elevation: 3 },
   lift: { shadowColor: '#3A2418', shadowOpacity: 0.16, shadowRadius: 30, shadowOffset: { width: 0, height: 16 }, elevation: 8 },
