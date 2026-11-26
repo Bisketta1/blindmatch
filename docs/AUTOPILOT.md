@@ -2,7 +2,7 @@
 
 Status: RUNNING
 Stop time: 2026-11-27 08:00 (Europe/Stockholm). After that: disable the scheduled task, write the final summary here, set Status to STOPPED.
-Wake-up: scheduled task every 2 hours resumes this session. Also stop immediately if the user writes "stoppa autopiloten".
+Wake-up: scheduled task trig_01AaaNL6mnMDRowLFDMG5R1L (name "blindmatch autopilot", every 2 h, Europe/Stockholm) resumes this session. Also stop immediately if the user writes "stoppa autopiloten".
 
 ## Mandate (from the user)
 - Code to main plus additive database changes (see CLAUDE.md rule 4). No spending. No destructive database statements.
