@@ -298,5 +298,28 @@
     "next": "{{n}} till för nästa titel",
     "thanksTitle": "Tack du fått",
     "none": "Inga tack än."
+  },
+  "reschedule": {
+    "button": "Byt tid",
+    "title": "Föreslå en ny tid",
+    "hint": "Den andra personen måste tacka ja. Tiden ändras först då.",
+    "date": "Dag",
+    "time": "Tid",
+    "send": "Skicka förslag",
+    "mine": "Du föreslog {{time}}. Väntar på svar.",
+    "theirs": "{{name}} vill byta till {{time}}",
+    "yes": "Passar bra",
+    "no": "Passar inte",
+    "undo": "Ångra förslaget",
+    "limit": "Hör av er till matchmakarna om tiden behöver ändras igen.",
+    "errSoon": "Välj en tid som är minst två timmar bort.",
+    "errFar": "Välj en tid inom tre veckor.",
+    "errSame": "Välj en annan tid än den nuvarande.",
+    "errLate": "Det är för sent att byta tid.",
+    "errLimit": "Ni har bytt tid så många gånger det går. Hör av er till matchmakarna.",
+    "errPending": "Det finns redan ett förslag att svara på.",
+    "done": "Tiden är ändrad.",
+    "kept": "Tiden ligger kvar.",
+    "expired": "Förslaget har gått ut. Tiden ligger kvar."
   }
 }

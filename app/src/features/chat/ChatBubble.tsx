@@ -4,7 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '@/shared/theme';
 
 /** Message bubble: mine = deep terracotta with a gentle gradient, theirs = white with a hairline. Soft shadow, one tighter corner. */
-export function ChatBubble({ mine, text, time }: { mine: boolean; text: string; time?: string }) {
+export function ChatBubble({ mine, text, time, system }: { mine: boolean; text: string; time?: string; system?: boolean }) {
+  if (system) {
+    return (
+      <View style={{ alignSelf: 'center', maxWidth: '88%', marginVertical: 8, backgroundColor: colors.primarySoft, borderRadius: 14, paddingHorizontal: 14, paddingVertical: 8 }}>
+        <Text style={{ color: colors.muted, fontSize: 13, lineHeight: 18, textAlign: 'center' }}>{text}</Text>
+      </View>
+    );
+  }
   const radius = { borderRadius: 22, borderBottomRightRadius: mine ? 7 : 22, borderBottomLeftRadius: mine ? 22 : 7 };
   const shadow = { shadowColor: mine ? '#7A2A1A' : '#3A2418', shadowOpacity: mine ? 0.22 : 0.07, shadowRadius: mine ? 12 : 10, shadowOffset: { width: 0, height: 5 }, elevation: 2 };
   return (

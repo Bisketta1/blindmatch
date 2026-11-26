@@ -22,7 +22,7 @@ import type { MatchRow } from '../(tabs)/chats';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius } from '@/shared/theme';
 
-type Msg = { id: string; sender_id: string; body: string; created_at: string };
+type Msg = { id: string; sender_id: string; body: string; created_at: string; kind?: string };
 type Proposal = { id: string; starts_at: string; place: string; address: string | null; description: string | null; double_date: boolean; status: string; i_approved: boolean };
 type Prof = { id: string; first_name: string; birth_date: string; city: string | null; bio: string | null; photos: string[]; friend_code?: string };
 
@@ -95,7 +95,7 @@ export default function ChatScreen() {
         const { data: fs } = await supabase.from('friendships').select('requester,addressee').or(`requester.eq.${m.other_matchmaker},addressee.eq.${m.other_matchmaker}`);
         setIsFriend((fs ?? []).length > 0);
       }
-      const { data: ms } = await supabase.from('messages').select('id,sender_id,body,created_at').eq('match_id', id).order('created_at');
+      const { data: ms } = await supabase.from('messages').select('id,sender_id,body,created_at,kind').eq('match_id', id).order('created_at');
       setMsgs((ms as Msg[]) ?? []);
       loadProposals();
       markRead();
@@ -229,7 +229,7 @@ export default function ChatScreen() {
           </Card>
         )}
         {msgs.map((m) => (
-          <ChatBubble key={m.id} mine={m.sender_id === uid} text={m.body} time={new Date(m.created_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} />
+          <ChatBubble key={m.id} mine={m.sender_id === uid} system={m.kind === 'system'} text={m.body} time={new Date(m.created_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} />
         ))}
         {props.filter((p) => p.status !== 'cancelled').map((p) => (
           <DateCard key={p.id} place={p.place} address={p.address} description={p.description} startsAt={p.starts_at}

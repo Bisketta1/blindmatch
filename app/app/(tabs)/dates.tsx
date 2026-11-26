@@ -11,6 +11,7 @@ import { FeedbackCard } from '@/features/dates/FeedbackCard';
 import { formatCountdown, isPast } from '@/features/dates/countdown';
 import { useNow } from '@/shared/lib/useNow';
 import { addressLabel } from '@/features/dates/maps';
+import { RescheduleSection } from '@/features/reschedule/RescheduleSection';
 import { colors } from '@/shared/theme';
 
 type Invite = {
@@ -65,6 +66,7 @@ export default function Dates() {
               )}
               {confirmed && r.chat_open && <Btn icon="chat" label={t('dates.openChat')} onPress={() => router.push(`/date-chat/${r.proposal_id}`)} />}
               {confirmed && !past && !r.chat_open && <Muted>{t('dates.chatLater')}</Muted>}
+              {confirmed && !past && <RescheduleSection proposalId={r.proposal_id} startsAt={r.starts_at} onChanged={load} />}
               {confirmed && <Btn kind="ghost" icon="share" label={t('dateCard.share')} onPress={() => share(r)} />}
             </DateCard>
             {r.clues.length > 0 && !past && (

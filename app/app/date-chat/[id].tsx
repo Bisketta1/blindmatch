@@ -17,7 +17,7 @@ import { Linking } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radius } from '@/shared/theme';
 
-type Msg = { id: string; sender_id: string; body: string; created_at: string };
+type Msg = { id: string; sender_id: string; body: string; created_at: string; kind?: string };
 type DateRow = { proposal_id: string; other_first_name: string; place: string; address: string | null; starts_at: string; chat_open: boolean };
 
 /** Chat between the two blind-date singles on the day of the date. They only know each other's first name. */
@@ -39,7 +39,7 @@ export default function DateChat() {
   const load = useCallback(async () => {
     const [{ data: ds }, { data: ms }] = await Promise.all([
       supabase.rpc('get_my_dates_v2'),
-      supabase.from('date_messages').select('id,sender_id,body,created_at').eq('proposal_id', id).order('created_at'),
+      supabase.from('date_messages').select('id,sender_id,body,created_at,kind').eq('proposal_id', id).order('created_at'),
     ]);
     setInfo(((ds as DateRow[]) ?? []).find((d) => d.proposal_id === id) ?? null);
     setMsgs((ms as Msg[]) ?? []);
@@ -86,7 +86,7 @@ export default function DateChat() {
         <Muted style={{ marginBottom: 14, textAlign: 'center' }}>{t('dateChat.hint')}</Muted>
         {msgs.length === 0 && <Muted style={{ textAlign: 'center', marginTop: 24 }}>{t('dateChat.empty')}</Muted>}
         {msgs.map((m) => (
-          <ChatBubble key={m.id} mine={m.sender_id === uid} text={m.body} time={new Date(m.created_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} />
+          <ChatBubble key={m.id} mine={m.sender_id === uid} system={m.kind === 'system'} text={m.body} time={new Date(m.created_at).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })} />
         ))}
       </ScrollView>
       </View>
