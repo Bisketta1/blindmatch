@@ -11,15 +11,16 @@ Wake-up: scheduled task trig_01AaaNL6mnMDRowLFDMG5R1L (name "blindmatch autopilo
 - Priorities from the user: 1) singles can reschedule, 2) date safety (trusted friend, check-in, "jag vill gå"), 3) animations and finish. Not wanted now: push notifications, App Store preparation.
 - The user wants name suggestions from the council. Do not rename the app until the user picks one.
 
-## Queue (work top to bottom, tick off in the log)
-1. Council: folder architecture + Apple HIG scope + feature designs. Save verdicts in docs/council/.
-2. Restructure `app/src` into feature folders and a `shared` layer. Keep `app/app` (routes) thin. Write `docs/CODEMAP.md`. Tests and web export stay green.
-3. Apple HIG cleanup pass over all screens (spacing, type scale, hierarchy, states, empty and error states).
-4. Feature: singles reschedule (both singles must agree; matchmakers get a chat line; chat window and countdown follow the new time). SQL + tests + UI.
-5. Feature: date safety (trusted friend gets time, place and first name; check-in; discreet "jag vill gå"). SQL + tests + UI.
-6. More animation and finish (consistent motion system, haptics, empty states, skeleton loading).
-7. Council name suggestions saved in docs/council/names.md (no renaming).
-8. Anything else the council ranks highest. Keep the user's phone link alive when asked.
+## Queue (work top to bottom; verdict in docs/council/21-verdict-round3.md)
+1. [done] Council round 3.
+2. Architecture migration, staged with gates: 0 baseline (tsc, jest, web export), 1 `@/` alias (tsconfig + jest moduleNameMapper), 2 shared/lib + theme + config + i18n, 3 shared/ui, 4 features (swipe, chat, dates, profile, matches, matchmaker, auth), 5 extract rpc calls into per-feature `api.ts` (one feature per commit, guard test), 6 move tests next to code, write docs/CODEMAP.md.
+3. HIG token pass: type scale + spacing tokens in shared/theme.ts, 44 pt targets, button height 50, sheet grabber and radius, large titles on tab roots, tab rename Chattar -> Matcher, lists instead of cards for chats and friends, empty/error/loading states, Reduce Motion, status labels reduced to three, Premium/demo/test under "Mer", stats hidden until a date happened, swipe counter only at 3 or fewer, double-date toggle hidden, proposal form "Lägg till detaljer" fold, privacy bullets.
+4. Reschedule feature (migration 0015+, SQL test, UI in dates tab, system lines in both chats).
+5. Date safety feature (migration, SQL test, UI: share with friend, check-ins, "Behöver du gå?", "Delat med dig" list on Friends).
+6. Polish: calm countdown ring, restrained motion system, skeletons.
+7. Names are saved in docs/council/names.md. Ask the user in the morning.
+8. Final: update CODEMAP, write the morning summary at the top of this file.
 
 ## Log (newest first)
+- 2026-11-27 00:00: council round 3 done and saved (docs/council/21-verdict-round3.md, names.md). Starting architecture migration.
 - 2026-11-26 23:30: autopilot set up.
