@@ -1,6 +1,19 @@
 # Autopilot
 
-Status: RUNNING
+## Morning summary (2026-11-27)
+Done and pushed to main (all gates green: tsc, jest 14/14, web export):
+- Reschedule by singles (migration 0015, SQL test 0003, UI in Dejter tab, system lines in chats).
+- Date safety (migration 0016, SQL test 0004): share a date with one friend, check-ins, "Delat med dig" list, 112 notice.
+- Chat after date confirmed (migration 0017, SQL test 0005): fixes the RLS error when matchmakers write after the date is confirmed.
+- One live date per single (migration 0018, SQL test 0006, council verdict docs/council/2026-11-27-parallel-matches.md): matches rest, Matcher tab groups per matchmaker.
+- HIG pass 1-5: type/spacing tokens, grouped lists (Matcher, Vanner), empty states, Reduce Motion, simpler status labels, tab renamed Matcher.
+- Clues card on the date screen; theme is forest green on sage ivory (user choice), all colours in app/src/shared/theme.ts.
+
+Not done (queue leftovers): "Mer" section (Premium/demo/test), stats hidden until a date happened, swipe counter only at <=3, hide double-date toggle, proposal form fold, privacy bullets, api.ts extraction per feature (stage 5), polish (countdown ring, skeletons), one shared chat per matchmaker pair (council option D).
+
+Ask the user: pick an app name (docs/council/names.md); restart the Expo tunnel; delete old test data and turn off dev switches (demo_switch_for_everyone, date_chat_always_open) before a real launch; the raw database error text is still shown in a few places.
+
+Status: STOPPED (2026-11-27 08:17 Stockholm; scheduled task disabled)
 Stop time: 2026-11-27 08:00 (Europe/Stockholm). After that: disable the scheduled task, write the final summary here, set Status to STOPPED.
 Wake-up: scheduled task trig_01AaaNL6mnMDRowLFDMG5R1L (name "blindmatch autopilot", every 2 h, Europe/Stockholm) resumes this session. Also stop immediately if the user writes "stoppa autopiloten".
 
