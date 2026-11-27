@@ -132,7 +132,10 @@
     "errOpen": "Det finns redan ett dejtförslag. Ändra eller ångra det först.",
     "addAddress": "Lägg till adress",
     "editAddress": "Ändra adress och beskrivning",
-    "saveDetails": "Spara"
+    "saveDetails": "Spara",
+    "errResting": "Det här förslaget vilar tills vidare. Försök igen när en annan dejt är avklarad.",
+    "resting": "Vilar tills vidare",
+    "groupTitle": "{{name}}, {{count}} förslag"
   },
   "dates": {
     "title": "Dina blinddejter",

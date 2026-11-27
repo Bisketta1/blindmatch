@@ -128,7 +128,7 @@ export default function ChatScreen() {
     setSending(true);
     const { error } = await supabase.rpc('propose_date_v2', { p_match: id, p_starts: when.toISOString(), p_place: place.trim(), p_address: addr, p_description: description.trim() || null, p_double: dbl });
     setSending(false);
-    if (error) return fail(error.message.includes('double') ? t('chats.errDouble') : (error.message.includes('proposals_one_open') || error.message.includes('not allowed')) ? t('chats.errOpen') : error.message.includes('future') ? t('chats.errPast') : error.message.includes('address') ? t('chats.errAddress') : t('common.error'), false, false);
+    if (error) return fail(error.message.includes('live date') ? t('chats.errResting') : error.message.includes('double') ? t('chats.errDouble') : (error.message.includes('proposals_one_open') || error.message.includes('not allowed')) ? t('chats.errOpen') : error.message.includes('future') ? t('chats.errPast') : error.message.includes('address') ? t('chats.errAddress') : t('common.error'), false, false);
     setShowForm(false); setPlace(''); setAddress(''); setDescription(''); setDbl(false);
     await supabase.from('messages').insert({ match_id: id, sender_id: uid, body: `Jag föreslog en dejt: ${place.trim()}, ${day} kl ${time}.` });
     loadProposals();
