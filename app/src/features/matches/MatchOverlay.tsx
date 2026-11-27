@@ -78,7 +78,7 @@ export function MatchOverlay() {
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: '#FFF8F1f5', alignItems: 'center', justifyContent: 'center', padding: 32 },
+  backdrop: { flex: 1, backgroundColor: '#F7FAF4f5', alignItems: 'center', justifyContent: 'center', padding: 32 },
   stage: { width: 260, height: 180, alignItems: 'center', justifyContent: 'center' },
   circle: { position: 'absolute', width: 120, height: 120, borderRadius: 60 },
   title: { fontSize: 36, lineHeight: 42, textAlign: 'center' },
