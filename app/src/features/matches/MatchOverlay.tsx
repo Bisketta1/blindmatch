@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { reduceMotion } from '@/shared/lib/motion';
 import { Animated, Easing, Modal, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +27,7 @@ export function MatchOverlay() {
     if (!match) return;
     hapticSuccess();
     [fade, heart, burst, text].forEach((v) => v.setValue(0));
+    if (reduceMotion()) { fade.setValue(1); left.setValue(-26); right.setValue(26); heart.setValue(1); text.setValue(1); return; }
     left.setValue(-160); right.setValue(160);
     Animated.sequence([
       Animated.timing(fade, { toValue: 1, duration: 180, useNativeDriver: true }),

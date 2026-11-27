@@ -40,3 +40,4 @@ Run everything from `app/` unless noted. Import with the alias `@/` (= `app/src/
 
 - `app/src/features/safety/` api.ts (only place calling safety RPCs), SafetySection.tsx (single: share date with a friend, check-ins, 112 notice; shown in Dejter tab), SharedWithMe.tsx (friend: 'Delat med dig' list in Friends tab). DB: migration 0016_safety.sql, test supabase/tests/0004_safety_test.sql.
 - `app/src/shared/ui/List.tsx` ListGroup/ListRow: iOS-style inset grouped list (used by Matcher tab).
+- `app/src/shared/lib/motion.ts` reduceMotion(): OS Reduce Motion flag; skipped by Shake, MatchOverlay, ReplyFlight.

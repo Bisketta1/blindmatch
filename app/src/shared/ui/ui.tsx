@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { ActivityIndicator, Animated, Pressable, StyleSheet, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native';
 import { colors, radius, shadow, type } from '@/shared/theme';
 import { Display } from '@/shared/ui/Display';
+import { reduceMotion } from '@/shared/lib/motion';
 import { Icon, IconName } from '@/shared/ui/Icon';
 
 export function Btn(props: { label: string; icon?: IconName; onPress: () => void; kind?: 'primary' | 'soft' | 'danger' | 'ghost'; disabled?: boolean; loading?: boolean; style?: ViewStyle }) {
@@ -30,7 +31,7 @@ export function Shake({ trigger, children, style }: { trigger?: number; children
   const first = useRef(true);
   useEffect(() => {
     if (first.current) { first.current = false; return; }
-    if (!trigger) return;
+    if (!trigger || reduceMotion()) return;
     Animated.sequence([-10, 10, -8, 8, -4, 4, 0].map((v) => Animated.timing(x, { toValue: v, duration: 45, useNativeDriver: true }))).start();
   }, [trigger, x]);
   return <Animated.View style={[style, { transform: [{ translateX: x }] }]}>{children}</Animated.View>;

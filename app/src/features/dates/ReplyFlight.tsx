@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { hapticLight, hapticMedium } from '@/shared/lib/haptics';
+import { reduceMotion } from '@/shared/lib/motion';
 
 export type FlightSpec = {
   text: string; color: string; tint: string; fg: string;
@@ -31,6 +32,7 @@ export const ReplyFlight = forwardRef<ReplyFlightHandle>(function ReplyFlight(_,
   useImperativeHandle(ref, () => ({
     play(spec) {
       if (playing.current) return;
+      if (reduceMotion()) { hapticMedium(); spec.onLand?.(); return; }
       playing.current = true;
       box.current?.measureInWindow((ox: number, oy: number) => {
         shrink.setValue(1); p.setValue(0); look.setValue(0); pop.setValue(1); burst.setValue(0); fade.setValue(1);
