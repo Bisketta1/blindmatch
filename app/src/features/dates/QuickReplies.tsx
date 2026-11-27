@@ -4,7 +4,7 @@ import { Pressable } from 'react-native';
 import type { ReplyFlightHandle } from '@/features/dates/ReplyFlight';
 
 export const REPLY_STYLES = [
-  { color: '#A8432F', tint: '#F7E9E1', fg: '#8F3826' },
+  { color: '#BA3F0A', tint: '#FFEBD9', fg: '#9A3306' },
   { color: '#C9A26B', tint: '#F5ECD9', fg: '#6E4E1C' },
   { color: '#2F7D5B', tint: '#E3F0E8', fg: '#22573F' },
   { color: '#2A201C', tint: '#ECE6E0', fg: '#2A201C' },

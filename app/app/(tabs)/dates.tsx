@@ -73,9 +73,14 @@ export default function Dates() {
               {confirmed && <Btn kind="ghost" icon="share" label={t('dateCard.share')} onPress={() => share(r)} />}
             </DateCard>
             {r.clues.length > 0 && !past && (
-              <View style={{ marginBottom: 12 }}>
-                <Text style={{ fontWeight: '700', color: colors.text, marginBottom: 6 }}>{t('dates.clues')}</Text>
-                {r.clues.map((c) => <Muted key={c.prompt}>{c.prompt} <Text style={{ color: colors.text, fontWeight: '600' }}>{c.answer}</Text></Muted>)}
+              <View style={{ backgroundColor: colors.primarySoft, borderRadius: 20, padding: 18, marginBottom: 12, gap: 14 }}>
+                <Text style={{ fontSize: 13, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', color: colors.primary }}>{t('dates.clues')}</Text>
+                {r.clues.map((c, i) => (
+                  <View key={c.prompt} style={{ gap: 2, paddingTop: i ? 14 : 0, borderTopWidth: i ? 1 : 0, borderTopColor: colors.accent }}>
+                    <Text style={{ fontSize: 13, color: colors.muted }}>{c.prompt}</Text>
+                    <Display style={{ fontSize: 20, lineHeight: 26 }}>{c.answer}</Display>
+                  </View>
+                ))}
               </View>
             )}
             {confirmed && feedbackTime && <FeedbackCard proposalId={r.proposal_id} otherName={r.other_first_name} matchmakers={r.credit} />}
