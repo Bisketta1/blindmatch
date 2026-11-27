@@ -82,7 +82,7 @@
   },
   "chats": {
     "title": "Matchmaker-chattar",
-    "empty": "Inga chattar än. Swipa så dyker de upp här!",
+    "empty": "Inga matcher än. Swipa så dyker de upp här.",
     "with": "{{other}} fixar {{otherSingle}} åt dig och {{mySingle}}",
     "typeMessage": "Skriv ett meddelande…",
     "send": "Skicka",
@@ -162,7 +162,7 @@
     "accept": "Acceptera",
     "decline": "Avvisa",
     "list": "Dina vänner",
-    "empty": "Inga vänner än.",
+    "empty": "Inga vänner än. Dela din kod så ser du dem här.",
     "block": "Blockera",
     "report": "Rapportera",
     "reportReason": "Vad är problemet?",

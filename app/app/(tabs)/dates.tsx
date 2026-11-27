@@ -12,6 +12,7 @@ import { formatCountdown, isPast } from '@/features/dates/countdown';
 import { useNow } from '@/shared/lib/useNow';
 import { addressLabel } from '@/features/dates/maps';
 import { RescheduleSection } from '@/features/reschedule/RescheduleSection';
+import { EmptyState } from '@/shared/ui/List';
 import { SafetySection } from '@/features/safety/SafetySection';
 import { colors } from '@/shared/theme';
 
@@ -46,7 +47,7 @@ export default function Dates() {
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16, paddingBottom: 32 }}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await load(); setRefreshing(false); }} tintColor={colors.primary} />}>
       <H1>{t('dates.title')}</H1>
-      {rows.length === 0 && <Muted>{t('dates.empty')}</Muted>}
+      {rows.length === 0 && <EmptyState icon="calendar" text={t('dates.empty')} />}
       {rows.map((r) => {
         const past = isPast(r.starts_at, now);
         const feedbackTime = isPast(new Date(new Date(r.starts_at).getTime() + 2 * 3600000), now);

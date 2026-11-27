@@ -8,6 +8,7 @@ import { useSession } from '@/features/auth/session';
 import { Btn, Card, Field, H1, Muted } from '@/shared/ui/ui';
 import { hapticError } from '@/shared/lib/haptics';
 import { colors } from '@/shared/theme';
+import { EmptyState } from '@/shared/ui/List';
 import { SharedWithMe } from '@/features/safety/SharedWithMe';
 
 type Req = { id: string; requester: string; first_name: string };
@@ -83,7 +84,7 @@ export default function Friends() {
       ))}
 
       <Text style={{ fontWeight: '800', marginTop: 24, marginBottom: 8, color: colors.text }}>{t('friends.list')}</Text>
-      {friends.length === 0 && <Muted>{t('friends.empty')}</Muted>}
+      {friends.length === 0 && <EmptyState icon="people" text={t('friends.empty')} />}
       {friends.map((f) => (
         <Card key={f.id}>
           <Text style={{ fontSize: 18, fontWeight: '700', color: colors.text }}>{f.first_name}</Text>

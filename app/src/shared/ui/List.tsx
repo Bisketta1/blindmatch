@@ -29,3 +29,15 @@ export function ListRow({ title, subtitle, badge, last, onPress, accessory }: {
     </Pressable>
   );
 }
+
+/** Calm empty state: icon, one sentence. */
+export function EmptyState({ icon, text }: { icon: React.ComponentProps<typeof Icon>['name']; text: string }) {
+  return (
+    <View style={{ alignItems: 'center', paddingVertical: 40, paddingHorizontal: 24, gap: 12 }}>
+      <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name={icon} size={28} color={colors.primary} />
+      </View>
+      <Text style={{ ...type.subhead, color: colors.muted, textAlign: 'center' }}>{text}</Text>
+    </View>
+  );
+}

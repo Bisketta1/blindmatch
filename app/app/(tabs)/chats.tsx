@@ -4,7 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
 import { H1, Muted } from '@/shared/ui/ui';
-import { ListGroup, ListRow } from '@/shared/ui/List';
+import { EmptyState, ListGroup, ListRow } from '@/shared/ui/List';
 import { useBadges } from '@/features/matches/badges';
 import { colors } from '@/shared/theme';
 
@@ -32,7 +32,7 @@ export default function Chats() {
   return (
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16 }}>
       <H1>{t('chats.title')}</H1>
-      {rows.length === 0 && <Muted>{t('chats.empty')}</Muted>}
+      {rows.length === 0 && <EmptyState icon="chat" text={t('chats.empty')} />}
       {rows.length > 0 && (
         <ListGroup>
           {rows.map((r, i) => (
