@@ -96,8 +96,8 @@
     "status": {
       "pending": "Väntar på godkännande",
       "sent": "Skickad till singlarna",
-      "confirmed": "Bekräftad!",
-      "declined": "Avböjd",
+      "confirmed": "Bekräftad",
+      "declined": "Inte av",
       "cancelled": "Avbruten"
     },
     "hint": "Singlarna vet inget än. När ni båda godkänt skickas en blind inbjudan.",
@@ -144,8 +144,8 @@
     "decline": "Inte nu",
     "clues": "Några ledtrådar",
     "double": "Dubbeldejt: era matchmakers följer med",
-    "accepted": "Du har tackat ja",
-    "declined": "Du har tackat nej",
+    "accepted": "Väntar",
+    "declined": "Inte av",
     "confirmed": "Dejten är bekräftad!",
     "confirmedTitle": "Bekräftad",
     "openChat": "Öppna dejtchatten",

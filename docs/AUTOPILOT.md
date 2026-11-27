@@ -32,3 +32,4 @@ Wake-up: scheduled task trig_01AaaNL6mnMDRowLFDMG5R1L (name "blindmatch autopilo
 - 2026-11-27 02:30: HIG pass step 2: ListGroup/ListRow, Matcher tab is now a list. Next: friends list rows, empty states, Reduce Motion, Mer section, status labels.
 - 2026-11-27 04:30: HIG pass step 3: Reduce Motion respected (shake, match overlay, quick-reply flight). Next: friends list rows, empty states, Mer section, status labels.
 - 2026-11-27 06:30: HIG pass step 4: EmptyState component on Matcher, Dejter and Friends tabs. Next (if time): friends list rows, Mer section, status labels, api.ts extraction. Final summary due at the 08:00 stop.
+- 2026-11-27 07:00: HIG pass step 5: Vänner tab is a grouped list with an action sheet (profile/report/block); date status labels reduced to Väntar / Bekräftad / Inte av. Remaining: Mer section, api.ts extraction.

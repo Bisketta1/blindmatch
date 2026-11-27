@@ -8,7 +8,8 @@ import { useSession } from '@/features/auth/session';
 import { Btn, Card, Field, H1, Muted } from '@/shared/ui/ui';
 import { hapticError } from '@/shared/lib/haptics';
 import { colors } from '@/shared/theme';
-import { EmptyState } from '@/shared/ui/List';
+import { EmptyState, ListGroup, ListRow } from '@/shared/ui/List';
+import { Sheet } from '@/shared/ui/Sheet';
 import { SharedWithMe } from '@/features/safety/SharedWithMe';
 
 type Req = { id: string; requester: string; first_name: string };
@@ -21,6 +22,7 @@ export default function Friends() {
   const [code, setCode] = useState('');
   const [reqs, setReqs] = useState<Req[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [actionFor, setActionFor] = useState<Friend | null>(null);
   const [reportFor, setReportFor] = useState<Friend | null>(null);
   const [reason, setReason] = useState('');
   const [codeErr, setCodeErr] = useState('');
@@ -85,16 +87,18 @@ export default function Friends() {
 
       <Text style={{ fontWeight: '800', marginTop: 24, marginBottom: 8, color: colors.text }}>{t('friends.list')}</Text>
       {friends.length === 0 && <EmptyState icon="people" text={t('friends.empty')} />}
-      {friends.map((f) => (
-        <Card key={f.id}>
-          <Text style={{ fontSize: 18, fontWeight: '700', color: colors.text }}>{f.first_name}</Text>
-          <View style={{ marginTop: 10 }}><Btn kind="soft" icon="person" label={t('friends.viewProfile')} onPress={() => router.push(`/friend/${f.id}`)} /></View>
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 8 }}>
-            <Btn kind="ghost" label={t('friends.report')} onPress={() => setReportFor(f)} style={{ flex: 1 }} />
-            <Btn kind="ghost" label={t('friends.block')} onPress={() => block(f)} style={{ flex: 1 }} />
-          </View>
-        </Card>
-      ))}
+      {friends.length > 0 && (
+        <ListGroup>
+          {friends.map((f, i) => <ListRow key={f.id} title={f.first_name} last={i === friends.length - 1} onPress={() => setActionFor(f)} />)}
+        </ListGroup>
+      )}
+      <Sheet visible={!!actionFor} onClose={() => setActionFor(null)} title={actionFor?.first_name ?? ''}>
+        <View style={{ gap: 8, marginTop: 8 }}>
+          <Btn kind="soft" icon="person" label={t('friends.viewProfile')} onPress={() => { const f = actionFor!; setActionFor(null); router.push(`/friend/${f.id}`); }} />
+          <Btn kind="ghost" label={t('friends.report')} onPress={() => { setReportFor(actionFor); setActionFor(null); }} />
+          <Btn kind="ghost" label={t('friends.block')} onPress={() => { const f = actionFor!; setActionFor(null); block(f); }} />
+        </View>
+      </Sheet>
       {reportFor && (
         <Card>
           <Field label={`${t('friends.report')}: ${reportFor.first_name} – ${t('friends.reportReason')}`} value={reason} onChangeText={(x) => { setReason(x); setReasonErr(false); }} multiline error={reasonErr} errorText={t('errors.reason')} shake={reasonShake} />
