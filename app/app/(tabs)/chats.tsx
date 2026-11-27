@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/shared/api/supabase';
-import { Card, H1, Muted } from '@/shared/ui/ui';
+import { H1, Muted } from '@/shared/ui/ui';
+import { ListGroup, ListRow } from '@/shared/ui/List';
 import { useBadges } from '@/features/matches/badges';
 import { colors } from '@/shared/theme';
 
@@ -32,21 +33,15 @@ export default function Chats() {
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={{ padding: 20, paddingTop: 16 }}>
       <H1>{t('chats.title')}</H1>
       {rows.length === 0 && <Muted>{t('chats.empty')}</Muted>}
-      {rows.map((r) => (
-        <Pressable key={r.match_id} onPress={() => router.push(`/chat/${r.match_id}`)}>
-          <Card>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: 18, fontWeight: '800', color: colors.text }}>{r.other_matchmaker_name}</Text>
-              {(unread[r.match_id] ?? 0) > 0 && (
-                <View style={{ backgroundColor: colors.badge, borderRadius: 12, minWidth: 24, height: 24, paddingHorizontal: 7, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ color: '#fff', fontWeight: '800', fontSize: 13 }}>{unread[r.match_id]}</Text>
-                </View>
-              )}
-            </View>
-            <Muted>{t('chats.with', { other: r.other_matchmaker_name, otherSingle: r.other_single_name, mySingle: r.my_single_name })}</Muted>
-          </Card>
-        </Pressable>
-      ))}
+      {rows.length > 0 && (
+        <ListGroup>
+          {rows.map((r, i) => (
+            <ListRow key={r.match_id} last={i === rows.length - 1} onPress={() => router.push(`/chat/${r.match_id}`)}
+              title={r.other_matchmaker_name} badge={unread[r.match_id] ?? 0}
+              subtitle={t('chats.with', { other: r.other_matchmaker_name, otherSingle: r.other_single_name, mySingle: r.my_single_name })} />
+          ))}
+        </ListGroup>
+      )}
     </ScrollView>
   );
 }
